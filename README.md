@@ -26,3 +26,14 @@ El objetivo es aplicar de forma práctica los conceptos de **hilos y procesos**,
 - **React**
 
 ---
+## 🎯 Objetivos del Proyecto
+
+- Crear una aplicación capaz de **gestionar películas, actores y directores** (CRUD completo).
+- Implementar **procesos concurrentes** en el backend para simular tareas como:
+  - Importación masiva de datos.
+  - Procesamiento de estadísticas.
+- Desarrollar una **interfaz moderna e intuitiva** en React que consuma la API REST.
+- Aplicar un **modelo de arquitectura limpia** (MVC).
+- Asegurar una **correcta persistencia de datos** usando JPA/Hibernate.
+
+---
