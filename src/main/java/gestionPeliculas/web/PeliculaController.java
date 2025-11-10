@@ -1,8 +1,8 @@
-package com.dam2.Practica1.web;
+package gestionPeliculas.web;
 
 
-import com.dam2.Practica1.domain.Pelicula;
-import com.dam2.Practica1.service.PeliculaService;
+import gestionPeliculas.domain.Pelicula;
+import gestionPeliculas.service.PeliculaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.CompletableFuture;
@@ -52,6 +52,12 @@ public class PeliculaController {
 
         long fin = System.currentTimeMillis();
         return "Tiempo total (asíncrono): " + (fin - inicio) + " ms";
+    }
+
+    // Al acceder esta ruta solo nos devuelve las películas con puntuación igual o mayor a la requerida
+    @GetMapping("/puntuacion/{puntuacion}")
+    public List<Pelicula> peliculasPuntuacionMinima (@PathVariable int puntuacion){
+        return service.devolverPeliculasPuntuacion(puntuacion);
     }
 
 }

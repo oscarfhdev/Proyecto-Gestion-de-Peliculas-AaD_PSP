@@ -1,6 +1,6 @@
-package com.dam2.Practica1.service;
+package gestionPeliculas.service;
 
-import com.dam2.Practica1.domain.Pelicula;
+import gestionPeliculas.domain.Pelicula;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +18,11 @@ public class PeliculaService {
 
     public PeliculaService() {
         peliculas.add(new Pelicula(1L, "Interstellar", 169, LocalDate.of(2014, 11, 7),
-                "Exploradores espaciales buscan un nuevo hogar para la humanidad."));
+                "Exploradores espaciales buscan un nuevo hogar para la humanidad.", 10, null, null, null));
         peliculas.add(new Pelicula(2L, "The Dark Knight", 152, LocalDate.of(2008, 7, 18),
-                "Batman enfrenta al Joker en una lucha por el alma de Gotham."));
+                "Batman enfrenta al Joker en una lucha por el alma de Gotham.", 5, null, null, null));
         peliculas.add(new Pelicula(3L, "Soul", 100, LocalDate.of(2020, 12, 25),
-                "Un músico descubre el sentido de la vida más allá de la muerte."));
+                "Un músico descubre el sentido de la vida más allá de la muerte.", 8, null, null, null));
     }
 
     public List<Pelicula> listar() {
@@ -71,4 +71,13 @@ public class PeliculaService {
         return CompletableFuture.completedFuture("Procesada " + titulo);
     }
 
+    public List<Pelicula> devolverPeliculasPuntuacion(int puntuacionMinima){
+        List<Pelicula> totalPeliculas = this.listar();
+
+        List<Pelicula> peliculasFiltradas = new ArrayList<>();
+        for(Pelicula pelicula : peliculas){
+            if (pelicula.getPuntuacion() >= puntuacionMinima) peliculasFiltradas.add(pelicula);
+        }
+        return peliculasFiltradas;
+    }
 }

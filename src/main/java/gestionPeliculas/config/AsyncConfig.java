@@ -1,4 +1,4 @@
-package com.dam2.Practica1.config;
+package gestionPeliculas.config;
 
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableAsync;

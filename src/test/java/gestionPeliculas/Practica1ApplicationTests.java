@@ -1,4 +1,4 @@
-package com.dam2.Practica1;
+package gestionPeliculas;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
