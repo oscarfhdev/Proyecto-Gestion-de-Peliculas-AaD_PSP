@@ -25,4 +25,11 @@ public class FichaTecnica {
     private Integer duracion;
 
     private String pais;
+
+    public FichaTecnica(Long id, String director, Integer duracion, String pais) {
+        this.id = id;
+        this.director = director;
+        this.duracion = duracion;
+        this.pais = pais;
+    }
 }

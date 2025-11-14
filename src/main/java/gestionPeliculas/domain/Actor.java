@@ -24,4 +24,9 @@ public class Actor {
     // Relación 1:N con película
     @ManyToMany(mappedBy = "actores")
     private List<Pelicula> peliculas;
+
+    public void addPelicula(Pelicula pelicula){
+        peliculas.add(pelicula);
+        pelicula.getActores().add(this);
+    }
 }

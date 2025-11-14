@@ -16,14 +16,14 @@ import java.util.concurrent.CompletableFuture;
 public class PeliculaService {
     private final List<Pelicula> peliculas = new ArrayList<>();
 
-    public PeliculaService() {
-        peliculas.add(new Pelicula(1L, "Interstellar", 169, LocalDate.of(2014, 11, 7),
-                "Exploradores espaciales buscan un nuevo hogar para la humanidad.", 10, null, null, null));
-        peliculas.add(new Pelicula(2L, "The Dark Knight", 152, LocalDate.of(2008, 7, 18),
-                "Batman enfrenta al Joker en una lucha por el alma de Gotham.", 5, null, null, null));
-        peliculas.add(new Pelicula(3L, "Soul", 100, LocalDate.of(2020, 12, 25),
-                "Un músico descubre el sentido de la vida más allá de la muerte.", 8, null, null, null));
-    }
+//    public PeliculaService() {
+//        peliculas.add(new Pelicula(1L, "Interstellar", 169, LocalDate.of(2014, 11, 7),
+//                "Exploradores espaciales buscan un nuevo hogar para la humanidad.", 10, null, null, null));
+//        peliculas.add(new Pelicula(2L, "The Dark Knight", 152, LocalDate.of(2008, 7, 18),
+//                "Batman enfrenta al Joker en una lucha por el alma de Gotham.", 5, null, null, null));
+//        peliculas.add(new Pelicula(3L, "Soul", 100, LocalDate.of(2020, 12, 25),
+//                "Un músico descubre el sentido de la vida más allá de la muerte.", 8, null, null, null));
+//    }
 
     public List<Pelicula> listar() {
         return peliculas;
