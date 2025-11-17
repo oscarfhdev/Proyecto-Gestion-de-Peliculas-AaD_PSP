@@ -1,7 +1,9 @@
 package gestionPeliculas.service;
 
 import gestionPeliculas.domain.Pelicula;
+import gestionPeliculas.repository.PeliculaRepository;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +15,12 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @Getter
+@RequiredArgsConstructor
 public class PeliculaService {
+
+    // PORQUE PRIVATE FINAL :(
+    private final PeliculaRepository peliculaRepository;
+
     private final List<Pelicula> peliculas = new ArrayList<>();
 
 //    public PeliculaService() {
@@ -26,7 +33,7 @@ public class PeliculaService {
 //    }
 
     public List<Pelicula> listar() {
-        return peliculas;
+        return peliculaRepository.findAll();
     }
 
     public Pelicula buscarPorId(Long id) {

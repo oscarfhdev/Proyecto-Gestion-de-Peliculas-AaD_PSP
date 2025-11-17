@@ -43,4 +43,10 @@ public class Pelicula {
         inverseJoinColumns = @JoinColumn(name = "actor_id") // FK de la otra entidad
     )
     private List<Actor> actores;
+
+    public void addActor(Actor actor){
+        actores.add(actor);
+        actor.getPeliculas().add(this);
+    }
+
 }

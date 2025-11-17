@@ -106,10 +106,8 @@ public class DataLoader {
             hathaway.addPelicula(interstellar);
             foxx.addPelicula(soul);
 
-
-            actorRepo.save(matthew);
-            actorRepo.save(hathaway);
-            actorRepo.save(foxx);
+            peliculaRepo.save(interstellar);
+            peliculaRepo.save(soul);
 
             System.out.println(">>> DATOS DE PRUEBA INSERTADOS CORRECTAMENTE");
         };
