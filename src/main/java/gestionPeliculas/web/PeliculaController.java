@@ -4,7 +4,11 @@ package gestionPeliculas.web;
 import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.service.PeliculaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.List;
 
@@ -54,10 +58,37 @@ public class PeliculaController {
         return "Tiempo total (asíncrono): " + (fin - inicio) + " ms";
     }
 
+    @GetMapping("/reproducirAsyncAleatorio")
+    public String reproducirAsyncAleatorio() {
+        long inicio = System.currentTimeMillis();
+
+        var t1 = service.reproducir("🍿 Interstellar");
+        var t2 = service.reproducir("🦇 The Dark Knight");
+        var t3 = service.reproducir("🎵 Soul");
+
+        // Espera a que terminen todas las tareas
+        CompletableFuture.allOf(t1, t2, t3).join();
+
+        long fin = System.currentTimeMillis();
+        return "Tiempo total (asíncrono & aleatorio): " + (fin - inicio) + " ms";
+    }
+
+
     // Al acceder esta ruta solo nos devuelve las películas con puntuación igual o mayor a la requerida
     @GetMapping("/puntuacion/{puntuacion}")
     public List<Pelicula> peliculasPuntuacionMinima (@PathVariable int puntuacion){
         return service.devolverPeliculasPuntuacion(puntuacion);
+    }
+
+    // Lo podemos hacer también con un get
+    @PostMapping("/cargarArchivosPeliculas")
+    public ResponseEntity<> cargarArchivosPeliculas() throws IOException {
+
+        /* Podemos añadir la verficiación y comprobar por el nombre si esas películas ya han sido añadidas anteriormente
+            comprobaríamos si el título coincide, en el caso de que lo haga
+        */
+        service.importarCarpeta("src/main/resources/archivos_peliculas");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Archivos importados correctamente");
     }
 
 }
