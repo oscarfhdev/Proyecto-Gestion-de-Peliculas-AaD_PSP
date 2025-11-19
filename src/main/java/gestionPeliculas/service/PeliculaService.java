@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.Async;
@@ -23,6 +24,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Stream;
 
 @Service
@@ -95,7 +98,7 @@ public class PeliculaService {
         long inicio = System.currentTimeMillis();
         try {
             System.out.println("Iniciando " + titulo + " en " + Thread.currentThread().getName());
-            int milisegundosAleatorios = new Random().nextInt((5)+1) * 1000;
+            int milisegundosAleatorios = new Random().nextInt(5) * 1000;
             Thread.sleep(milisegundosAleatorios);
             System.out.println("Terminando película " + titulo);
         } catch (InterruptedException e) {
@@ -203,5 +206,75 @@ public class PeliculaService {
         }
 
         return CompletableFuture.completedFuture(null);
+    }
+
+    @Async("taskExecutor")
+    public CompletableFuture<Void> votarComoJurado(
+            ConcurrentHashMap<String, Integer> votos,
+            List<Pelicula> peliculas,
+            Semaphore sem) {
+
+        try {
+            sem.acquire(); // BONUS: máximo 5 hilos votando simultáneamente
+
+            // Elegir película aleatoria
+            Pelicula p = peliculas.get(new Random().nextInt(peliculas.size()));
+            String titulo = p.getTitulo();
+
+            // Voto aleatorio 0–10
+            int puntos = new Random().nextInt(11);
+
+            // Sumar al mapa de forma segura
+            votos.merge(titulo, puntos, Integer::sum);
+
+            System.out.println("[" + Thread.currentThread().getName() + "] "
+                    + "vota " + puntos + " puntos a " + titulo);
+
+            sem.release(); // liberar hueco en el semáforo
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        return CompletableFuture.completedFuture(null);
+    }
+
+
+
+    public HashMap<String, Integer> simularVotacionesAleatorias(int numeroVotaciones) {
+
+        List<Pelicula> peliculas = listar(); // todas las películas de la BD
+
+        // Mapa concurrente para los votos
+        ConcurrentHashMap<String, Integer> votos = new ConcurrentHashMap<>();
+
+        // Inicializar todas las películas con 0 votos
+        for (Pelicula p : peliculas) {
+            votos.put(p.getTitulo(), 0);
+        }
+
+        // Semaphore: solo 5 jurados votan simultáneamente (bonus)
+        Semaphore sem = new Semaphore(5);
+
+        // Lista de futuros
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        // Lanzar hilos (jurados)
+        for (int i = 0; i < numeroVotaciones; i++) {
+            futures.add(votarComoJurado(votos, peliculas, sem));
+        }
+
+        // Esperar a que todos acaben
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        System.out.println("---- RECUENTO FINAL ----");
+
+        // Ordenar por puntuación descendente
+        votos.entrySet().stream()
+                .sorted((a, b) -> b.getValue() - a.getValue())
+                .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue() + " puntos"));
+
+        // Devolver como HashMap normal (el endpoint lo pide así)
+        return new HashMap<>(votos);
     }
 }
