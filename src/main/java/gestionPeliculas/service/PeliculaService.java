@@ -59,7 +59,7 @@ public class PeliculaService {
     }
 
     public Pelicula buscarPorId(Long id) {
-        for (Pelicula p : peliculas) {
+        for (Pelicula p : listar()) {
             if (p.getId().equals(id)) {
                 return p;
             }
@@ -145,7 +145,7 @@ public class PeliculaService {
                 if (nombre.endsWith(".csv") || nombre.endsWith(".txt")) {
                     futures.add(this.self.importarCsvAsync(path));
                 } else if (nombre.endsWith(".xml")) {
-                    futures.add(this.self.importarCsvAsync(path));
+                    futures.add(this.self.importarXmlAsync(path));
                 }
             });
         }
