@@ -1,5 +1,6 @@
 package gestionPeliculas.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class Actor {
 
     // Relación 1:N con película
     @ManyToMany(mappedBy = "actores")
+    @JsonIgnore
     private List<Pelicula> peliculas;
 
     public void addPelicula(Pelicula pelicula){

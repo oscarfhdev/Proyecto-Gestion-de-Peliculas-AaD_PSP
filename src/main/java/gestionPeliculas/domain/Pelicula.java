@@ -1,5 +1,6 @@
 package gestionPeliculas.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ public class Pelicula {
     private Director director;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
         name = "pelicula_actores", // nombre de la tabla intermedia
         joinColumns = @JoinColumn(name = "pelicula_id"), // FK de esta entidad

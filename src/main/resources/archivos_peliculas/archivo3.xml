@@ -1,0 +1,20 @@
+<peliculas>
+    <pelicula>
+        <titulo>Interstellar</titulo>
+        <duracion>169</duracion>
+        <fechaEstreno>2014-11-07</fechaEstreno>
+        <sinopsis>Exploradores espaciales</sinopsis>
+    </pelicula>
+    <pelicula>
+        <titulo>Soul</titulo>
+        <duracion>100</duracion>
+        <fechaEstreno>2020-12-25</fechaEstreno>
+        <sinopsis>Un músico descubre</sinopsis>
+    </pelicula>
+    <pelicula>
+        <titulo>Batman</titulo>
+        <duracion>135</duracion>
+        <fechaEstreno>2016-12-25</fechaEstreno>
+        <sinopsis>Caballero oscuro</sinopsis>
+    </pelicula>
+</peliculas>

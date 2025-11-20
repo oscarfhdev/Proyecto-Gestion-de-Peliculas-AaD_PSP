@@ -1,5 +1,6 @@
 package gestionPeliculas.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class Director {
 
     // Relación 1:N con película
     @OneToMany(mappedBy = "director")
+    @JsonIgnore
     private List<Pelicula> peliculas;
 }

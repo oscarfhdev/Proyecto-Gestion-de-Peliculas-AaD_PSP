@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 @Getter
 public class PeliculaService {
 
-    // PORQUE PRIVATE FINAL :(
+    // final si hacemos @RequireArgsConstructor
     @Autowired
     private PeliculaRepository peliculaRepository;
 
@@ -55,7 +55,7 @@ public class PeliculaService {
 
     // En función de que queramos hacer podemos retornar el contenido de la base de datos o el contenido de la lista
     public List<Pelicula> listar() {
-        return peliculas;
+        return peliculaRepository.findAll();
     }
 
     public Pelicula buscarPorId(Long id) {
@@ -127,10 +127,9 @@ public class PeliculaService {
 
     // Ejercicio mandado en clase para devolver las películas con mejor puntuación
     public List<Pelicula> devolverPeliculasPuntuacion(int puntuacionMinima){
-        List<Pelicula> totalPeliculas = this.listar();
 
         List<Pelicula> peliculasFiltradas = new ArrayList<>();
-        for(Pelicula pelicula : peliculas){
+        for(Pelicula pelicula : this.listar()){
             if (pelicula.getPuntuacion() >= puntuacionMinima) peliculasFiltradas.add(pelicula);
         }
         return peliculasFiltradas;
@@ -144,9 +143,9 @@ public class PeliculaService {
             paths.filter(Files::isRegularFile).forEach(path -> {
                 String nombre = path.toString().toLowerCase();
                 if (nombre.endsWith(".csv") || nombre.endsWith(".txt")) {
-                    futures.add(importarCsvAsync(path));
+                    futures.add(this.self.importarCsvAsync(path));
                 } else if (nombre.endsWith(".xml")) {
-                    futures.add(importarCsvAsync(path));
+                    futures.add(this.self.importarCsvAsync(path));
                 }
             });
         }
@@ -177,7 +176,7 @@ public class PeliculaService {
                 lista.add(p);
             }
 
-            peliculaRepository.saveAll(lista);
+            this.peliculaRepository.saveAll(lista);
 
             System.out.println("Finalizado CSV: " + fichero);
 
@@ -213,7 +212,7 @@ public class PeliculaService {
                 lista.add(p);
             }
 
-            peliculaRepository.saveAll(lista);
+            this.peliculaRepository.saveAll(lista);
 
             System.out.println("Finalizado XML: " + fichero);
 
@@ -229,7 +228,7 @@ public class PeliculaService {
     public HashMap<String, Integer> simularVotacionesAleatorias(int numeroVotaciones) {
         long inicio = System.currentTimeMillis();
 
-        List<Pelicula> peliculasCandidatas = listar(); // listamos todas las películas guardadas
+        List<Pelicula> peliculasCandidatas = this.listar(); // listamos todas las películas guardadas
 
         // Mapa concurrente para los votos
         ConcurrentHashMap<String, Integer> registroVotos = new ConcurrentHashMap<>();
@@ -251,7 +250,7 @@ public class PeliculaService {
                 por lo tanto hacemos como una trampa inyectando el propio sevicio(para ahorrar tiempo), lo correcto es poner este método con
                 la anotación en otra clase
              */
-            resultadosFuturos.add(self.votarComoJurado(registroVotos, peliculasCandidatas, semaforo));
+            resultadosFuturos.add(this.self.votarComoJurado(registroVotos, peliculasCandidatas, semaforo));
         }
 
         // Esperamos a que todos acaben, le pasamos la lista de resultados futuros como array[], el 0 en realidad se ajusta automáticametne al tamaño
