@@ -41,6 +41,7 @@ public class PeliculaController {
         return service.devolverPeliculasPuntuacion(puntuacion);
     }
 
+    // Ejercicio 1a
     @GetMapping("/procesar")
     public String procesarPeliculas() {
         long inicio = System.currentTimeMillis();
@@ -51,7 +52,7 @@ public class PeliculaController {
         return "Tiempo total: " + (fin - inicio) + " ms";
     }
 
-    // Ejercicio 1
+    // Ejercicio 1b
     @GetMapping("/procesarAsync")
     public String procesarAsync() {
         long inicio = System.currentTimeMillis();
@@ -99,8 +100,7 @@ public class PeliculaController {
     // Ejercicio 4
     @GetMapping("/oscar/{numeroJurados}")
     public HashMap<String, Integer> votarOscar(@PathVariable int numeroJurados){
-        ConcurrentHashMap<String, Integer> votos = new ConcurrentHashMap<>();
-
+        // Llamamos al servicio pasándlo el número de jurados, obtenidos a través de la URL
         return service.simularVotacionesAleatorias(numeroJurados);
     }
 }

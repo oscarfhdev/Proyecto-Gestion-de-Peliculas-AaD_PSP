@@ -4,6 +4,8 @@ import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.repository.PeliculaRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,25 +32,30 @@ import java.util.stream.Stream;
 
 @Service
 @Getter
-@RequiredArgsConstructor
 public class PeliculaService {
 
     // PORQUE PRIVATE FINAL :(
-    private final PeliculaRepository peliculaRepository;
+    @Autowired
+    private PeliculaRepository peliculaRepository;
+
+    @Autowired
+    @Lazy
+    private PeliculaService self;
 
     private final List<Pelicula> peliculas = new ArrayList<>();
 
-//    public PeliculaService() {
-//        peliculas.add(new Pelicula(1L, "Interstellar", 169, LocalDate.of(2014, 11, 7),
-//                "Exploradores espaciales buscan un nuevo hogar para la humanidad.", 10, null, null, null));
-//        peliculas.add(new Pelicula(2L, "The Dark Knight", 152, LocalDate.of(2008, 7, 18),
-//                "Batman enfrenta al Joker en una lucha por el alma de Gotham.", 5, null, null, null));
-//        peliculas.add(new Pelicula(3L, "Soul", 100, LocalDate.of(2020, 12, 25),
-//                "Un músico descubre el sentido de la vida más allá de la muerte.", 8, null, null, null));
-//    }
+    public PeliculaService() {
+        peliculas.add(new Pelicula(1L, "Interstellar", 169, LocalDate.of(2014, 11, 7),
+                "Exploradores espaciales buscan un nuevo hogar para la humanidad.", 10, null, null, null));
+        peliculas.add(new Pelicula(2L, "The Dark Knight", 152, LocalDate.of(2008, 7, 18),
+                "Batman enfrenta al Joker en una lucha por el alma de Gotham.", 5, null, null, null));
+        peliculas.add(new Pelicula(3L, "Soul", 100, LocalDate.of(2020, 12, 25),
+                "Un músico descubre el sentido de la vida más allá de la muerte.", 8, null, null, null));
+    }
 
+    // En función de que queramos hacer podemos retornar el contenido de la base de datos o el contenido de la lista
     public List<Pelicula> listar() {
-        return peliculaRepository.findAll();
+        return peliculas;
     }
 
     public Pelicula buscarPorId(Long id) {
@@ -70,6 +77,7 @@ public class PeliculaService {
         peliculas.add(pelicula);
     }
 
+    // Tarea 1a
     public String tareaLenta(String titulo) {
         try {
             System.out.println("Iniciando tarea para " + titulo + " en " + Thread.currentThread().getName());
@@ -82,6 +90,7 @@ public class PeliculaService {
     }
 
     @Async("taskExecutor")
+    // Tarea 1b
     public CompletableFuture<String> tareaLenta2(String titulo) {
         try {
             System.out.println("Iniciando " + titulo + " en " + Thread.currentThread().getName());
@@ -93,23 +102,30 @@ public class PeliculaService {
         return CompletableFuture.completedFuture("Procesada " + titulo);
     }
 
+    // Tarea 2
     @Async("taskExecutor")
+    // Retornamos un completableFuture de string
     public CompletableFuture<String> reproducir(String titulo) {
         long inicio = System.currentTimeMillis();
         try {
             System.out.println("Iniciando " + titulo + " en " + Thread.currentThread().getName());
-            int milisegundosAleatorios = new Random().nextInt(5) * 1000;
+            // Con esto reproducimos durante un periodo aleatorio 1-5 segundos
+            int milisegundosAleatorios = (new Random().nextInt(5)+1) * 1000;
             Thread.sleep(milisegundosAleatorios);
+
             System.out.println("Terminando película " + titulo);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        long tiempoTotalReprduccion = System.currentTimeMillis() - inicio;
-        System.out.println("Procesada la película: " + titulo + " en " + tiempoTotalReprduccion + " milisegundos");
-        return CompletableFuture.completedFuture("Procesada la película: " + titulo + " en " + tiempoTotalReprduccion + " milisegundos");
+        // El tiempo es el actual - el inicial
+        long tiempoTotalReproduccion = System.currentTimeMillis() - inicio;
+        System.out.println("Procesada la película: " + titulo + " en " + tiempoTotalReproduccion + " milisegundos");
+
+        // Retornamos la tarea cuando se completa
+        return CompletableFuture.completedFuture("Procesada la película: " + titulo + " en " + tiempoTotalReproduccion + " milisegundos");
     }
 
-
+    // Ejercicio mandado en clase para devolver las películas con mejor puntuación
     public List<Pelicula> devolverPeliculasPuntuacion(int puntuacionMinima){
         List<Pelicula> totalPeliculas = this.listar();
 
@@ -120,6 +136,7 @@ public class PeliculaService {
         return peliculasFiltradas;
     }
 
+    // Ejercicio 3, llama a importarCsvAsync & importarCsvAsync
     public void importarCarpeta(String rutaCarpeta) throws IOException {
         long inicio = System.currentTimeMillis();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
@@ -129,7 +146,7 @@ public class PeliculaService {
                 if (nombre.endsWith(".csv") || nombre.endsWith(".txt")) {
                     futures.add(importarCsvAsync(path));
                 } else if (nombre.endsWith(".xml")) {
-                    futures.add(importarXmlAsync(path));
+                    futures.add(importarCsvAsync(path));
                 }
             });
         }
@@ -139,7 +156,6 @@ public class PeliculaService {
         long fin = System.currentTimeMillis();
         System.out.println("Importación completa en " + (fin - inicio) + " ms");
     }
-
 
     @Async("taskExecutor")
     public CompletableFuture<Void> importarCsvAsync(Path fichero) {
@@ -208,73 +224,96 @@ public class PeliculaService {
         return CompletableFuture.completedFuture(null);
     }
 
+
+    // Ejercicio 4, llamamos a votarComoJurado()
+    public HashMap<String, Integer> simularVotacionesAleatorias(int numeroVotaciones) {
+        long inicio = System.currentTimeMillis();
+
+        List<Pelicula> peliculasCandidatas = listar(); // listamos todas las películas guardadas
+
+        // Mapa concurrente para los votos
+        ConcurrentHashMap<String, Integer> registroVotos = new ConcurrentHashMap<>();
+
+        // Inicializar todas las películas con 0 votos, en el caso de que no sea votada
+        for (Pelicula p : peliculasCandidatas) {
+            registroVotos.put(p.getTitulo(), 0);
+        }
+
+        // Instanciamos nuestro semáforo de solo 5 jurados votando simultáneamente
+        Semaphore semaforo = new Semaphore(5);
+
+        // Creamos una lista de resultados futuros, void porque no devuelve ningún valo, solo esperamos a qué termine
+        List<CompletableFuture<Void>> resultadosFuturos = new ArrayList<>();
+
+        // Aquí empezamos a lanzar los hilos, cada hilo es una votación aleatoria, lanzará tantos votos como los que hemos puesto en la URL
+        for (int i = 0; i < numeroVotaciones; i++) {
+            /* Aquí utilizamos self porque al llamar un método a otro que tiene @Async dentro de la misma clase no se activa el taskexecutor
+                por lo tanto hacemos como una trampa inyectando el propio sevicio(para ahorrar tiempo), lo correcto es poner este método con
+                la anotación en otra clase
+             */
+            resultadosFuturos.add(self.votarComoJurado(registroVotos, peliculasCandidatas, semaforo));
+        }
+
+        // Esperamos a que todos acaben, le pasamos la lista de resultados futuros como array[], el 0 en realidad se ajusta automáticametne al tamaño
+        CompletableFuture.allOf(resultadosFuturos.toArray(new CompletableFuture[0])).join();
+
+        long tiempoTotalVotacion = System.currentTimeMillis() - inicio;
+        // Imprimimos el resultado final:
+        System.out.println("Votación realizada en: " + tiempoTotalVotacion + " milisegundos");
+        System.out.println("---- RECUENTO FINAL ----");
+        /* Tras hacer las pruebas:
+            - 10 votaciones: 0ms
+            - 100 votaciones: 1ms
+            - 100 votaciones: 3ms
+         */
+
+        // Ordenar por puntuación descendente, no modifica el registro de votos solo hace sout ordenado
+        registroVotos.entrySet().stream()
+                // Aquí compara todos con todos, sorted espera 2 elementos para comparar y en función del resultado de la resta lo coloca antes o después
+                // Utilizamos - para ordenar como ranking, si pusiéramos + iría de menor a mayor
+                .sorted((a, b) -> b.getValue() - a.getValue())
+                // Aquí hacemos un forEach, imprimimos de manera sencilla primero con la clave y luego con el valor
+                .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue() + " puntos"));
+
+        // Devolvemos el hashmap,se muestra desordenado en el navegador porque spring al serializar desordena
+        return new HashMap<>(registroVotos);
+    }
+
     @Async("taskExecutor")
+    // Método que devuelve un completable future
     public CompletableFuture<Void> votarComoJurado(
-            ConcurrentHashMap<String, Integer> votos,
-            List<Pelicula> peliculas,
-            Semaphore sem) {
+            ConcurrentHashMap<String, Integer> votos, // Le pasamos un mapa, pero es un tipo seguro para concurrencia, no un simple hashmap
+            List<Pelicula> peliculas, // Le pasamos la lista de películas
+            Semaphore semaforo) { // Le pasamos el semáforo
 
         try {
-            sem.acquire(); // BONUS: máximo 5 hilos votando simultáneamente
+            // Solicitan el permiso al semáforo
+            semaforo.acquire();
 
-            // Elegir película aleatoria
-            Pelicula p = peliculas.get(new Random().nextInt(peliculas.size()));
-            String titulo = p.getTitulo();
+            // Elegimos la película de manera aleatoria, generar un número dentro del rango del tamaño del array
+            Pelicula peliculaRandom = peliculas.get(new Random().nextInt(peliculas.size()));
+            String titulo = peliculaRandom.getTitulo();
 
             // Voto aleatorio 0–10
-            int puntos = new Random().nextInt(11);
+            int puntoAleatorios = new Random().nextInt(11);
 
-            // Sumar al mapa de forma segura
-            votos.merge(titulo, puntos, Integer::sum);
+            /* Sumamos al mapa de forma segura
+                el título es la clave a actualizar
+                puntosAleatorios va a ser el valor en el caso de que la clave no exista
+                y el método de referencia dice que si ya hay valores se suman, ya que se tienen que combinar si los valores ya existen
+             */
+            votos.merge(titulo, puntoAleatorios, Integer::sum); // El método de referencia es similar a (a, b) -> a + b
 
+            // Ahora imprimimos la votación de cada jurado / hilo
             System.out.println("[" + Thread.currentThread().getName() + "] "
-                    + "vota " + puntos + " puntos a " + titulo);
+                    + "vota " + puntoAleatorios + " puntos a " + titulo);
 
-            sem.release(); // liberar hueco en el semáforo
+            semaforo.release(); // liberamos el hueco en el semáforo, ya que ha acabado
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
+        // Retornamos que la tarea ha acabado
         return CompletableFuture.completedFuture(null);
-    }
-
-
-
-    public HashMap<String, Integer> simularVotacionesAleatorias(int numeroVotaciones) {
-
-        List<Pelicula> peliculas = listar(); // todas las películas de la BD
-
-        // Mapa concurrente para los votos
-        ConcurrentHashMap<String, Integer> votos = new ConcurrentHashMap<>();
-
-        // Inicializar todas las películas con 0 votos
-        for (Pelicula p : peliculas) {
-            votos.put(p.getTitulo(), 0);
-        }
-
-        // Semaphore: solo 5 jurados votan simultáneamente (bonus)
-        Semaphore sem = new Semaphore(5);
-
-        // Lista de futuros
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-
-        // Lanzar hilos (jurados)
-        for (int i = 0; i < numeroVotaciones; i++) {
-            futures.add(votarComoJurado(votos, peliculas, sem));
-        }
-
-        // Esperar a que todos acaben
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-
-        System.out.println("---- RECUENTO FINAL ----");
-
-        // Ordenar por puntuación descendente
-        votos.entrySet().stream()
-                .sorted((a, b) -> b.getValue() - a.getValue())
-                .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue() + " puntos"));
-
-        // Devolver como HashMap normal (el endpoint lo pide así)
-        return new HashMap<>(votos);
     }
 }
