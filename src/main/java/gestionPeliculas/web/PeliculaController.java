@@ -1,6 +1,7 @@
 package gestionPeliculas.web;
 
 
+import gestionPeliculas.DTO.PeliculaDTO;
 import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.service.PeliculaService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/api/peliculas")
@@ -21,12 +21,12 @@ public class PeliculaController {
     private final PeliculaService service;
 
     @GetMapping
-    public List<Pelicula> listar() {
+    public List<PeliculaDTO> listar() {
         return service.listar();
     }
 
     @GetMapping("/{id}")
-    public Pelicula buscarPorId(@PathVariable Long id) {
+    public PeliculaDTO buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
@@ -37,7 +37,7 @@ public class PeliculaController {
 
     // Al acceder esta ruta solo nos devuelve las películas con puntuación igual o mayor a la requerida
     @GetMapping("/puntuacion/{puntuacion}")
-    public List<Pelicula> peliculasPuntuacionMinima (@PathVariable int puntuacion){
+    public List<PeliculaDTO> peliculasPuntuacionMinima (@PathVariable int puntuacion){
         return service.devolverPeliculasPuntuacion(puntuacion);
     }
 

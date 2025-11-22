@@ -1,9 +1,9 @@
 package gestionPeliculas.service;
 
+import gestionPeliculas.DTO.PeliculaDTO;
 import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.repository.PeliculaRepository;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -54,12 +54,28 @@ public class PeliculaService {
     }
 
     // En función de que queramos hacer podemos retornar el contenido de la base de datos o el contenido de la lista
-    public List<Pelicula> listar() {
-        return peliculaRepository.findAll();
+    public List<PeliculaDTO> listar() {
+        return peliculaRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .toList();
+        // Coge la lista de películas y te las transforma con el dto
     }
 
-    public Pelicula buscarPorId(Long id) {
-        for (Pelicula p : listar()) {
+    private PeliculaDTO toDto(Pelicula pelicula) {
+        return new PeliculaDTO(
+                pelicula.getId(),
+                pelicula.getTitulo(),
+                pelicula.getDuracion(),
+                pelicula.getFechaEstreno(),
+                pelicula.getSinopsis(),
+                pelicula.getValoracion()
+        );
+    }
+
+
+    public PeliculaDTO buscarPorId(Long id) {
+        for (PeliculaDTO p : listar()) {
             if (p.getId().equals(id)) {
                 return p;
             }
@@ -126,11 +142,11 @@ public class PeliculaService {
     }
 
     // Ejercicio mandado en clase para devolver las películas con mejor puntuación
-    public List<Pelicula> devolverPeliculasPuntuacion(int puntuacionMinima){
+    public List<PeliculaDTO> devolverPeliculasPuntuacion(int puntuacionMinima){
 
-        List<Pelicula> peliculasFiltradas = new ArrayList<>();
-        for(Pelicula pelicula : this.listar()){
-            if (pelicula.getPuntuacion() >= puntuacionMinima) peliculasFiltradas.add(pelicula);
+        List<PeliculaDTO> peliculasFiltradas = new ArrayList<>();
+        for(PeliculaDTO pelicula : this.listar()){
+            if (pelicula.getValoracion() >= puntuacionMinima) peliculasFiltradas.add(pelicula);
         }
         return peliculasFiltradas;
     }
@@ -228,13 +244,13 @@ public class PeliculaService {
     public HashMap<String, Integer> simularVotacionesAleatorias(int numeroVotaciones) {
         long inicio = System.currentTimeMillis();
 
-        List<Pelicula> peliculasCandidatas = this.listar(); // listamos todas las películas guardadas
+        List<PeliculaDTO> peliculasCandidatas = this.listar(); // listamos todas las películas guardadas
 
         // Mapa concurrente para los votos
         ConcurrentHashMap<String, Integer> registroVotos = new ConcurrentHashMap<>();
 
         // Inicializar todas las películas con 0 votos, en el caso de que no sea votada
-        for (Pelicula p : peliculasCandidatas) {
+        for (PeliculaDTO p : peliculasCandidatas) {
             registroVotos.put(p.getTitulo(), 0);
         }
 
@@ -282,7 +298,7 @@ public class PeliculaService {
     // Método que devuelve un completable future
     public CompletableFuture<Void> votarComoJurado(
             ConcurrentHashMap<String, Integer> votos, // Le pasamos un mapa, pero es un tipo seguro para concurrencia, no un simple hashmap
-            List<Pelicula> peliculas, // Le pasamos la lista de películas
+            List<PeliculaDTO> peliculas, // Le pasamos la lista de películas
             Semaphore semaforo) { // Le pasamos el semáforo
 
         try {
@@ -290,7 +306,7 @@ public class PeliculaService {
             semaforo.acquire();
 
             // Elegimos la película de manera aleatoria, generar un número dentro del rango del tamaño del array
-            Pelicula peliculaRandom = peliculas.get(new Random().nextInt(peliculas.size()));
+            PeliculaDTO peliculaRandom = peliculas.get(new Random().nextInt(peliculas.size()));
             String titulo = peliculaRandom.getTitulo();
 
             // Voto aleatorio 0–10
