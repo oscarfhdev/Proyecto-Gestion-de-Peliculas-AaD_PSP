@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/peliculas")
 @RequiredArgsConstructor
 public class PeliculaController {
+
     private final PeliculaService service;
 
     @GetMapping

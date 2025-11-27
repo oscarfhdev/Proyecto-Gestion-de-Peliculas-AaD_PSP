@@ -62,7 +62,7 @@ public class PeliculaService {
 
 
     // En función de que queramos hacer podemos retornar el contenido de la base de datos o el contenido de la lista
-    // GET /peliculas → devuelve List<PeliculaDTO>
+    // Devuelve una lista de películas de tipo DTO
     public List<PeliculaDTO> listar() {
         return peliculaRepository.findAll()
                 .stream()
@@ -71,6 +71,7 @@ public class PeliculaService {
         // Coge la lista de películas y te las transforma con el dto
     }
 
+    // Nos retorna la película si la encuentra, de lo contrario lanza código 404
     public PeliculaDTO buscarPorId(Long id) {
         Pelicula p = peliculaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Película no encontrada con id: " + id));
@@ -84,6 +85,7 @@ public class PeliculaService {
     }
 
     @Transactional
+    // Agrega la película, si no es posible se revierte (transacctional)
     public PeliculaDTO agregar(PeliculaCreateUpdateDTO peliculaCreateUpdateDTO) {
         Pelicula peliculaGuardar = mapper.toEntity(peliculaCreateUpdateDTO);
         peliculaGuardar = peliculaRepository.save(peliculaGuardar);
@@ -91,6 +93,7 @@ public class PeliculaService {
     }
 
     @Transactional
+    // Actualiza la película, si no es posible se revierte (transacctional). Si no la encuentra lanza 404
     public PeliculaDTO actualizar(Long id, PeliculaCreateUpdateDTO peliculaCreateUpdateDTO) {
         Pelicula peliculaExistente = peliculaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Película no encontrada con id: " + id));
@@ -103,6 +106,7 @@ public class PeliculaService {
     }
 
     @Transactional
+    // Elimina la película y no devuelve nada, si no la encuentra lanza código de error 404
     public void eliminar(Long id) {
         boolean existe = peliculaRepository.existsById(id);
         if (!existe) {
