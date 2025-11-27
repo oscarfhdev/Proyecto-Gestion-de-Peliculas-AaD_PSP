@@ -46,9 +46,37 @@ public class Pelicula {
     )
     private List<Actor> actores;
 
+    @ManyToMany
+    @JoinTable(
+            name = "peliculas_categorias",
+            joinColumns = @JoinColumn(name = "pelicula_id"),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id")
+    )
+    private List<Categoria> categorias;
+
+    @ManyToMany
+    @JoinTable(
+            name = "peliculas_idiomas",
+            joinColumns = @JoinColumn(name = "pelicula_id"),
+            inverseJoinColumns = @JoinColumn(name = "idioma_id")
+    )
+    private List<Idioma> idiomas;
+
+
+    // Helpers
+
     public void addActor(Actor actor){
         actores.add(actor);
         actor.getPeliculas().add(this);
     }
 
+    public void addCategoria(Categoria categoria){
+        categorias.add(categoria);
+        categoria.getPeliculas().add(this);
+    }
+
+    public void addIdioma(Idioma idioma){
+        idiomas.add(idioma);
+        idioma.getPeliculas().add(this);
+    }
 }

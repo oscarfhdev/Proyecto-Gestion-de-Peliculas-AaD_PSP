@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 @Configuration
 public class DataLoader {
-
+    /*
     // Este código debe ejecutarse automáticamente justo DESPUÉS de que arranque toda la aplicación.
     @Bean
     CommandLineRunner initData(ActorRepository actorRepo,
@@ -69,7 +69,7 @@ public class DataLoader {
                     9,
                     f1,
                     nolan,
-                    new ArrayList<>()  // lista de actores VACÍA
+                    new ArrayList<>()  // lista de actores VACÍA,
             );
 
             Pelicula soul = new Pelicula(
@@ -112,4 +112,6 @@ public class DataLoader {
             System.out.println(">>> DATOS DE PRUEBA INSERTADOS CORRECTAMENTE");
         };
     }
+
+     */
 }
