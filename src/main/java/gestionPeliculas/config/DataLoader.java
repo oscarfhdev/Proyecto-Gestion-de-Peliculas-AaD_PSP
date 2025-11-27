@@ -2,11 +2,9 @@ package gestionPeliculas.config;
 
 import gestionPeliculas.domain.Actor;
 import gestionPeliculas.domain.Director;
-import gestionPeliculas.domain.FichaTecnica;
 import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.repository.ActorRepository;
 import gestionPeliculas.repository.DirectorRepository;
-import gestionPeliculas.repository.FichaTecnicaRepository;
 import gestionPeliculas.repository.PeliculaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

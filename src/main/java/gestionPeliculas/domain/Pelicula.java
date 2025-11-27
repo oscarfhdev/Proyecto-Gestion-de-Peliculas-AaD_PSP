@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "peliculas")
 @Data  // ✅ Lombok genera getters, setters, toString, equals, hashCode
-@AllArgsConstructor      // ✅ genera constructor con todos los campos
 @NoArgsConstructor
 public class Pelicula {
 
@@ -29,10 +29,6 @@ public class Pelicula {
 
     private int valoracion;
 
-    @OneToOne
-    @JoinColumn(name = "ficha_id")
-    private FichaTecnica fichaTecnica;
-
     @ManyToOne
     @JoinColumn(name = "director_id")
     private Director director;
@@ -44,7 +40,7 @@ public class Pelicula {
         joinColumns = @JoinColumn(name = "pelicula_id"), // FK de esta entidad
         inverseJoinColumns = @JoinColumn(name = "actor_id") // FK de la otra entidad
     )
-    private List<Actor> actores;
+    private List<Actor> actores = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -52,7 +48,7 @@ public class Pelicula {
             joinColumns = @JoinColumn(name = "pelicula_id"),
             inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
-    private List<Categoria> categorias;
+    private List<Categoria> categorias = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -60,7 +56,7 @@ public class Pelicula {
             joinColumns = @JoinColumn(name = "pelicula_id"),
             inverseJoinColumns = @JoinColumn(name = "idioma_id")
     )
-    private List<Idioma> idiomas;
+    private List<Idioma> idiomas = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -68,10 +64,14 @@ public class Pelicula {
             joinColumns = @JoinColumn(name = "pelicula_id"),
             inverseJoinColumns = @JoinColumn(name = "plataforma_id")
     )
-    private List<Plataforma> plataformas;
+    private List<Plataforma> plataformas = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "pelicula")
-    private List<Critica> criticas;
+    private List<Funcion> funciones = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pelicula")
+    private List<Critica> criticas = new ArrayList<>();
 
     // Helpers
     public void addActor(Actor actor){
@@ -88,4 +88,10 @@ public class Pelicula {
         idiomas.add(idioma);
         idioma.getPeliculas().add(this);
     }
+
+    public void addPlataforma(Plataforma plataforma) {
+        plataformas.add(plataforma);
+        plataforma.getPeliculas().add(this);
+    }
+
 }
