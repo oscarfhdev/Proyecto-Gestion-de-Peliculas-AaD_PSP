@@ -27,7 +27,7 @@ public class Pelicula {
 
     private String sinopsis;
 
-    private int puntuacion;
+    private int valoracion;
 
     @OneToOne
     @JoinColumn(name = "ficha_id")

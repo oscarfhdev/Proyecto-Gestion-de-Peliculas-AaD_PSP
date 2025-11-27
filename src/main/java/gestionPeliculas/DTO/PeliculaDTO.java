@@ -14,6 +14,6 @@ public class PeliculaDTO {
     private String titulo;
     private Integer duracion;
     private LocalDate fechaEstreno;
-    private String sipnosis;
+    private String sinopsis;
     private Integer valoracion;
 }

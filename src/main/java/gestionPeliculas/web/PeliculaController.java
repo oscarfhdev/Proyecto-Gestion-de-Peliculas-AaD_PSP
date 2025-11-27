@@ -1,9 +1,10 @@
 package gestionPeliculas.web;
 
 
+import gestionPeliculas.DTO.PeliculaCreateUpdateDTO;
 import gestionPeliculas.DTO.PeliculaDTO;
-import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.service.PeliculaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +22,33 @@ public class PeliculaController {
     private final PeliculaService service;
 
     @GetMapping
+    // GET /peliculas → devuelve todas las películas
     public List<PeliculaDTO> listar() {
         return service.listar();
     }
 
     @GetMapping("/{id}")
+    // GET /peliculas/{id} → devuelve PeliculaDТО
     public PeliculaDTO buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
     @PostMapping
-    public void agregar(@RequestBody Pelicula pelicula) {
-        service.agregar(pelicula);
+    // POST /peliculas → recibe PeliculaCreateUpdateDTO, devuelve PeliculaDTO
+    public PeliculaDTO agregar(@Valid @RequestBody PeliculaCreateUpdateDTO pelicula) {
+        return service.agregar(pelicula);
+    }
+
+    @PutMapping("/{id}")
+    // PUT /peliculas/{id} → recibe PeliculaCreateUpdateDTO, devuelve PeliculaDTO
+    public PeliculaDTO actualizar(@PathVariable Long id, @Valid @RequestBody PeliculaCreateUpdateDTO pelicula) {
+        return service.actualizar(id, pelicula);
+    }
+
+    @DeleteMapping("/{id}")
+    // DELETE /peliculas/{id} → no necesita DTO (normalmente void o un mensaje)
+    public void eliminar(@PathVariable Long id) {
+        service.eliminar(id);
     }
 
     // Al acceder esta ruta solo nos devuelve las películas con puntuación igual o mayor a la requerida
@@ -41,6 +57,12 @@ public class PeliculaController {
         return service.devolverPeliculasPuntuacion(puntuacion);
     }
 
+
+
+
+    // ------------------------------------------------------------------------------------------------
+    //PSP ---------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------
     // Ejercicio 1a
     @GetMapping("/procesar")
     public String procesarPeliculas() {
