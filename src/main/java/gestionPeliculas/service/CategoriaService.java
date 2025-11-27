@@ -2,7 +2,7 @@ package gestionPeliculas.service;
 
 import gestionPeliculas.DTO.CategoriaCreateUpdateDTO;
 import gestionPeliculas.DTO.CategoriaDTO;
-import gestionPeliculas.DTO.CategoriaMapper;
+import gestionPeliculas.DTO.mappers.CategoriaMapper;
 import gestionPeliculas.domain.Categoria;
 import gestionPeliculas.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

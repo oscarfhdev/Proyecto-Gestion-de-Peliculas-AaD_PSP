@@ -62,9 +62,18 @@ public class Pelicula {
     )
     private List<Idioma> idiomas;
 
+    @ManyToMany
+    @JoinTable(
+            name = "peliculas_plataformas",
+            joinColumns = @JoinColumn(name = "pelicula_id"),
+            inverseJoinColumns = @JoinColumn(name = "plataforma_id")
+    )
+    private List<Plataforma> plataformas;
+
+    @OneToMany(mappedBy = "pelicula")
+    private List<Critica> criticas;
 
     // Helpers
-
     public void addActor(Actor actor){
         actores.add(actor);
         actor.getPeliculas().add(this);

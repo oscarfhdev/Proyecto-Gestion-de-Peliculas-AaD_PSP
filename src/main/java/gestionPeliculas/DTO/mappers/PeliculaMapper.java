@@ -1,4 +1,4 @@
-package gestionPeliculas.DTO;
+package gestionPeliculas.DTO.mappers;
 
 import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.DTO.PeliculaCreateUpdateDTO;

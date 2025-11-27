@@ -1,5 +1,7 @@
-package gestionPeliculas.DTO;
+package gestionPeliculas.DTO.mappers;
 
+import gestionPeliculas.DTO.ActorCreateUpdateDTO;
+import gestionPeliculas.DTO.ActorDTO;
 import gestionPeliculas.domain.Actor;
 import org.springframework.stereotype.Component;
 

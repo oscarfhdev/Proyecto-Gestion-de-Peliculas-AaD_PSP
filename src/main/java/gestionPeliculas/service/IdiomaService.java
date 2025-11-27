@@ -2,7 +2,7 @@ package gestionPeliculas.service;
 
 import gestionPeliculas.DTO.IdiomaCreateUpdateDTO;
 import gestionPeliculas.DTO.IdiomaDTO;
-import gestionPeliculas.DTO.IdiomaMapper;
+import gestionPeliculas.DTO.mappers.IdiomaMapper;
 import gestionPeliculas.domain.Idioma;
 import gestionPeliculas.repository.IdiomaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

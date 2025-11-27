@@ -2,7 +2,7 @@ package gestionPeliculas.service;
 
 import gestionPeliculas.DTO.ActorCreateUpdateDTO;
 import gestionPeliculas.DTO.ActorDTO;
-import gestionPeliculas.DTO.ActorMapper;
+import gestionPeliculas.DTO.mappers.ActorMapper;
 import gestionPeliculas.domain.Actor;
 import gestionPeliculas.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;

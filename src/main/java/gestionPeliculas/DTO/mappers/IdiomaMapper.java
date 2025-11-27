@@ -1,5 +1,7 @@
-package gestionPeliculas.DTO;
+package gestionPeliculas.DTO.mappers;
 
+import gestionPeliculas.DTO.IdiomaCreateUpdateDTO;
+import gestionPeliculas.DTO.IdiomaDTO;
 import gestionPeliculas.domain.Idioma;
 import org.springframework.stereotype.Component;
 

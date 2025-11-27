@@ -2,7 +2,7 @@ package gestionPeliculas.service;
 
 import gestionPeliculas.DTO.PeliculaCreateUpdateDTO;
 import gestionPeliculas.DTO.PeliculaDTO;
-import gestionPeliculas.DTO.PeliculaMapper;
+import gestionPeliculas.DTO.mappers.PeliculaMapper;
 import gestionPeliculas.domain.Pelicula;
 import gestionPeliculas.repository.PeliculaRepository;
 import lombok.Getter;
