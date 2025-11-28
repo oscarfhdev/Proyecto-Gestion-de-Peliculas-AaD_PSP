@@ -1,38 +1,40 @@
 package gestionPeliculas.web;
 
-import gestionPeliculas.DTO.CriticaCreateUpdateDTO;
-import gestionPeliculas.service.CriticaService;
+import gestionPeliculas.DTO.FuncionCreateUpdateDTO;
+import gestionPeliculas.DTO.FuncionDTO;
+import gestionPeliculas.service.FuncionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/criticas")
+@RequestMapping("/api/funciones")
 @RequiredArgsConstructor
-public class CriticaController {
+public class FuncionController {
 
-    private final CriticaService service;
+    private final FuncionService service;
 
     @GetMapping
-    public List<CriticaCreateUpdateDTO> listar() {
+    public List<FuncionDTO> listar() {
         return service.listar();
     }
 
     @GetMapping("/{id}")
-    public CriticaCreateUpdateDTO buscarPorId(@PathVariable Long id) {
+    public FuncionDTO buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CriticaCreateUpdateDTO agregar(@Valid @RequestBody CriticaCreateUpdateDTO dto) {
+    public FuncionDTO agregar(@Valid @RequestBody FuncionCreateUpdateDTO dto) {
         return service.agregar(dto);
     }
 
     @PutMapping("/{id}")
-    public CriticaCreateUpdateDTO actualizar(@PathVariable Long id, @Valid @RequestBody CriticaCreateUpdateDTO dto) {
+    public FuncionDTO actualizar(@PathVariable Long id, @Valid @RequestBody FuncionCreateUpdateDTO dto) {
         return service.actualizar(id, dto);
     }
 

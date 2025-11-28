@@ -5,6 +5,7 @@ import gestionPeliculas.DTO.UsuarioDTO;
 import gestionPeliculas.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class UsuarioController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public UsuarioDTO agregar(@Valid @RequestBody UsuarioCreateUpdateDTO dto) {
         return service.agregar(dto);
     }
@@ -37,6 +39,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }

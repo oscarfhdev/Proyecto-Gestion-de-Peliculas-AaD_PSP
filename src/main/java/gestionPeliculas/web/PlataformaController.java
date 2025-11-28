@@ -5,6 +5,7 @@ import gestionPeliculas.DTO.PlataformaDTO;
 import gestionPeliculas.service.PlataformaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class PlataformaController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public PlataformaDTO agregar(@Valid @RequestBody PlataformaCreateUpdateDTO dto) {
         return service.agregar(dto);
     }
@@ -36,6 +38,7 @@ public class PlataformaController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }

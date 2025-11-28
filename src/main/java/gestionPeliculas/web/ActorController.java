@@ -5,6 +5,7 @@ import gestionPeliculas.DTO.ActorDTO;
 import gestionPeliculas.service.ActorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class ActorController {
 
     // POST /actores → recibe ActorCreateUpdateDTO, devuelve ActorDTO
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ActorDTO agregar(@Valid @RequestBody ActorCreateUpdateDTO actor) {
         return service.agregar(actor);
     }
@@ -42,6 +44,7 @@ public class ActorController {
 
     // DELETE /actores/{id} → elimina un actor
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }

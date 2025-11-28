@@ -2,13 +2,13 @@ package gestionPeliculas.domain;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "usuarios")
 @Entity
@@ -25,6 +25,6 @@ public class Usuario {
     private String password;
 
     @OneToMany(mappedBy = "usuario")
-    private List<Critica> criticas;
+    private List<Critica> criticas = new ArrayList<>();
 
 }

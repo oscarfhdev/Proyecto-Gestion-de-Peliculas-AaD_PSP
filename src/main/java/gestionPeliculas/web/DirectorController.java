@@ -5,6 +5,7 @@ import gestionPeliculas.DTO.DirectorDTO;
 import gestionPeliculas.service.DirectorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class DirectorController {
 
     // POST /directores → recibe DirectorCreateUpdateDTO, devuelve DirectorDTO
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public DirectorDTO agregar(@Valid @RequestBody DirectorCreateUpdateDTO director) {
         return service.agregar(director);
     }
@@ -42,6 +44,7 @@ public class DirectorController {
 
     // DELETE /directores/{id} → elimina un director
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }

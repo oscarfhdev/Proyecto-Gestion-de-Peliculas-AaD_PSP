@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "criticas")
 @Entity
+@Table(name = "criticas")
 public class Critica {
 
     @Id
@@ -30,5 +29,4 @@ public class Critica {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-
 }

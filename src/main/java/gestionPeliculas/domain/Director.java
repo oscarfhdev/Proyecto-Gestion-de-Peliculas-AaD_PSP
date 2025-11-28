@@ -2,17 +2,15 @@ package gestionPeliculas.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "directores")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "directores")
 public class Director {
 
     @Id
@@ -25,5 +23,5 @@ public class Director {
     // Relación 1:N con película
     @OneToMany(mappedBy = "director")
     @JsonIgnore
-    private List<Pelicula> peliculas;
+    private List<Pelicula> peliculas = new ArrayList<>();
 }

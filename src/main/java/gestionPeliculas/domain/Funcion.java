@@ -1,7 +1,6 @@
 package gestionPeliculas.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
@@ -9,7 +8,6 @@ import java.time.LocalTime;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "funciones")
 public class Funcion {
@@ -33,5 +31,4 @@ public class Funcion {
     @ManyToOne
     @JoinColumn(name = "sala_id")
     private Sala sala;
-
 }

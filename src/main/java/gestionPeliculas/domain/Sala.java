@@ -1,14 +1,14 @@
 package gestionPeliculas.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "salas")
 public class Sala {
@@ -22,5 +22,5 @@ public class Sala {
     private Long capacidad;
 
     @OneToMany(mappedBy = "sala")
-    private List<Funcion> funciones;
+    private List<Funcion> funciones = new ArrayList<>();
 }

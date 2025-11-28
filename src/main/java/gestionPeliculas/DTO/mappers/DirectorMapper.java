@@ -12,8 +12,8 @@ public class DirectorMapper {
     public DirectorDTO toDto(Director director) {
         if (director == null) return null;
         return new DirectorDTO(
-                director.getId(),
-                director.getNombre()
+            director.getId(),
+            director.getNombre()
         );
     }
 

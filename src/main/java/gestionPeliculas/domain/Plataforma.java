@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "plataformas")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Plataforma {
 
@@ -22,6 +23,6 @@ public class Plataforma {
     private String url;
 
     @ManyToMany(mappedBy = "plataformas")
-    private List<Pelicula> peliculas;
+    private List<Pelicula> peliculas = new ArrayList<>();
 
 }

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
@@ -35,6 +34,7 @@ public class PeliculaController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     // POST /peliculas → recibe PeliculaCreateUpdateDTO, devuelve PeliculaDTO
     public PeliculaDTO agregar(@Valid @RequestBody PeliculaCreateUpdateDTO pelicula) {
         return service.agregar(pelicula);
@@ -47,6 +47,7 @@ public class PeliculaController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     // DELETE /peliculas/{id} → no necesita DTO (normalmente void o un mensaje)
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);

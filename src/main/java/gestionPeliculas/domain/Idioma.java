@@ -1,17 +1,16 @@
 package gestionPeliculas.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "idiomas")
-@Data  // Lombok genera getters, setters, toString, equals, hashCode
-@AllArgsConstructor      // Genera constructor con todos los campos
+@Data
 @NoArgsConstructor
+@Table(name = "idiomas")
 public class Idioma {
 
     @Id
@@ -21,6 +20,6 @@ public class Idioma {
     private String nombre;
 
     @ManyToMany(mappedBy = "idiomas")
-    private List<Pelicula> peliculas;
+    private List<Pelicula> peliculas = new ArrayList<>();
 
 }

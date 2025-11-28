@@ -1,17 +1,15 @@
 package gestionPeliculas.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "categorias")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "categorias")
 public class Categoria {
 
     @Id
@@ -21,6 +19,6 @@ public class Categoria {
     private String nombre;
 
     @ManyToMany(mappedBy = "categorias")
-    private List<Pelicula> peliculas;
+    private List<Pelicula> peliculas = new ArrayList<>();
 
 }

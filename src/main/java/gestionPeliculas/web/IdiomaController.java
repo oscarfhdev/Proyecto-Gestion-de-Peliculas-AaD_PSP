@@ -5,6 +5,7 @@ import gestionPeliculas.DTO.IdiomaDTO;
 import gestionPeliculas.service.IdiomaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class IdiomaController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public IdiomaDTO agregar(@Valid @RequestBody IdiomaCreateUpdateDTO dto) {
         return service.agregar(dto);
     }
@@ -37,6 +39,7 @@ public class IdiomaController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }
