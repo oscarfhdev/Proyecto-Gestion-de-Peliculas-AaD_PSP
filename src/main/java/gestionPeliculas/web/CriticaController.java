@@ -1,6 +1,7 @@
 package gestionPeliculas.web;
 
 import gestionPeliculas.DTO.CriticaCreateUpdateDTO;
+import gestionPeliculas.DTO.CriticaDTO;
 import gestionPeliculas.service.CriticaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,23 +17,23 @@ public class CriticaController {
     private final CriticaService service;
 
     @GetMapping
-    public List<CriticaCreateUpdateDTO> listar() {
+    public List<CriticaDTO> listar() {
         return service.listar();
     }
 
     @GetMapping("/{id}")
-    public CriticaCreateUpdateDTO buscarPorId(@PathVariable Long id) {
+    public CriticaDTO buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CriticaCreateUpdateDTO agregar(@Valid @RequestBody CriticaCreateUpdateDTO dto) {
+    public CriticaDTO agregar(@Valid @RequestBody CriticaCreateUpdateDTO dto) {
         return service.agregar(dto);
     }
 
     @PutMapping("/{id}")
-    public CriticaCreateUpdateDTO actualizar(@PathVariable Long id, @Valid @RequestBody CriticaCreateUpdateDTO dto) {
+    public CriticaDTO actualizar(@PathVariable Long id, @Valid @RequestBody CriticaCreateUpdateDTO dto) {
         return service.actualizar(id, dto);
     }
 

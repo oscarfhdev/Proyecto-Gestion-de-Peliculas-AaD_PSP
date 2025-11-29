@@ -3,6 +3,7 @@ package gestionPeliculas.web;
 import gestionPeliculas.DTO.SalaCreateUpdateDTO;
 import gestionPeliculas.DTO.SalaDTO;
 import gestionPeliculas.service.SalaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,12 @@ public class SalaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SalaDTO agregar(@RequestBody SalaCreateUpdateDTO dto) {
+    public SalaDTO agregar(@RequestBody @Valid SalaCreateUpdateDTO dto) {
         return salaService.agregar(dto);
     }
 
     @PutMapping("/{id}")
-    public SalaDTO actualizar(@PathVariable Long id, @RequestBody SalaCreateUpdateDTO dto) {
+    public SalaDTO actualizar(@PathVariable Long id, @RequestBody @Valid SalaCreateUpdateDTO dto) {
         return salaService.actualizar(id, dto);
     }
 

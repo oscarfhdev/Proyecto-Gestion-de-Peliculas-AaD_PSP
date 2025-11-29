@@ -10,9 +10,9 @@ public class SalaMapper {
 
     public SalaDTO toDto(Sala sala) {
         return new SalaDTO(
-                sala.getId(),
-                sala.getNumeroSala(),
-                sala.getCapacidad()
+            sala.getId(),
+            sala.getNumeroSala(),
+            sala.getCapacidad()
         );
     }
 

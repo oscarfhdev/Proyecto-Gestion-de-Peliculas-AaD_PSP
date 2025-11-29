@@ -1,6 +1,7 @@
 package gestionPeliculas.DTO.mappers;
 
 import gestionPeliculas.DTO.CriticaCreateUpdateDTO;
+import gestionPeliculas.DTO.CriticaDTO;
 import gestionPeliculas.domain.Critica;
 import org.springframework.stereotype.Component;
 
@@ -8,9 +9,10 @@ import org.springframework.stereotype.Component;
 public class CriticaMapper {
 
     // ENTITY -> DTO
-    public CriticaCreateUpdateDTO toDto(Critica critica) {
+    public CriticaDTO toDto(Critica critica) {
         if (critica == null) return null;
-        CriticaCreateUpdateDTO dto = new CriticaCreateUpdateDTO();
+        CriticaDTO dto = new CriticaDTO();
+        dto.setId(critica.getId());
         dto.setComentario(critica.getComentario());
         dto.setNota(critica.getNota());
         dto.setFecha(critica.getFecha());

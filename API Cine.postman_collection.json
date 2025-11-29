@@ -1,0 +1,692 @@
+{
+	"info": {
+		"_postman_id": "f9d53962-6eab-49e4-8ab9-5407a3c8446e",
+		"name": "API Cine",
+		"description": "Proyecto para probar la funcionalidad de cada una de las entidades de nuestra base de datos CINE.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "50443336",
+		"_collection_link": "https://oscarfhdev-7108140.postman.co/workspace/oscarfhdev's-Workspace~1847a02c-522b-445e-8d50-09a45ed70abc/collection/50443336-f9d53962-6eab-49e4-8ab9-5407a3c8446e?action=share&source=collection_link&creator=50443336"
+	},
+	"item": [
+		{
+			"name": "CRUD Pelicula",
+			"item": [
+				{
+					"name": "Obtener Peliculas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/peliculas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Peliculas By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/peliculas/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Pelicula",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"Soul pueba\",\n    \"duracion\": 120,\n    \"fechaEstreno\": \"2020-12-25\",\n    \"sinopsis\": \"Un músico descubre el verdadero sentido de la vida...\",\n    \"valoracion\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/peliculas"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Pelicula",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"Soul prueba PUT\",\n    \"duracion\": 120,\n    \"fechaEstreno\": \"2020-12-25\",\n    \"sinopsis\": \"Un músico descubre el verdadero sentido de la vida...\",\n    \"valoracion\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/peliculas/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Pelicula",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/peliculas/2"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Actor",
+			"item": [
+				{
+					"name": "Obtener Actores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/actores"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Actores By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/actores/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Actor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"nombre\": \"actor prueba\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/actores"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Actor",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"nombre\": \"actor prueba acutalizar\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/actores/5"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Actor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/actores/5"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Director",
+			"item": [
+				{
+					"name": "Obtener Directores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/directores"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Directores By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/directores/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Director",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Director prueba2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/directores"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Director",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"nombre\": \"director prueba acutalizar\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/directores/5"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Director",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/directores/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Funcion",
+			"item": [
+				{
+					"name": "Obtener Funciones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/funciones"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Funcion By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/funciones/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Funcion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fecha\": \"2025-02-15\",\n    \"hora\": \"20:30:00\",\n    \"precio\": 10,\n    \"formato\": \"3D prueba\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/funciones"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Funcion",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fecha\": \"2025-02-15\",\n    \"hora\": \"20:30:00\",\n    \"precio\": 10,\n    \"formato\": \"3D prueba2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/funciones/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Funcion",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/funciones/3"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Categoria",
+			"item": [
+				{
+					"name": "Obtener Categorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/categorias"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Categorias By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/categorias/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Categoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Comedia\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/categorias"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Categoria",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Comedia actualizado\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/categorias/4"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Categoria",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/categorias/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Critica",
+			"item": [
+				{
+					"name": "Obtener Criticas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/criticas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Critica By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/criticas/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Critica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comentario\": \"critica prueba\",\n    \"nota\": 9.0,\n    \"fecha\": \"2025-11-29\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/criticas"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Critica",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comentario\": \"critica prueba actualizada\",\n    \"nota\": 9.0,\n    \"fecha\": \"2025-11-29\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/criticas/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Critica",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/criticas/3"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Idioma",
+			"item": [
+				{
+					"name": "Obtener Idiomas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/idiomas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Idioma By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/idiomas/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Idioma",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Alemán\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/idiomas"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Idioma",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Alemán actualizaado\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/idiomas/4"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Iidioma",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/idiomas/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Plataforma",
+			"item": [
+				{
+					"name": "Obtener Plataformas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/plataformas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Plataforma By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/plataformas/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Plataforma",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Disney Plus Prueba\",\n    \"url\": \"https://www.disneyplus.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/plataformas"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Plataforma",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Disney Plus Prueba Actualizado :)\",\n    \"url\": \"https://www.disneyplus.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/plataformas/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Plataforma",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/plataformas/3"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Sala",
+			"item": [
+				{
+					"name": "Obtener Salas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/salas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Sala By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/salas/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Sala",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroSala\": 10,\n    \"capacidad\": 200\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/salas"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Sala",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{       \n    \"numeroSala\": 101,\n    \"capacidad\": 200    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/salas/4"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Sala",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/salas/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Usuario",
+			"item": [
+				{
+					"name": "Obtener Usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/usuarios"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Usuario By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8081/api/usuarios/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"prueba\",\n    \"email\": \"pruebapost@preuba.com\",\n    \"password\": \"a232389rasdf2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/usuarios"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Usuario",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"prueba PUT\",\n    \"email\": \"pruebaputt@preuba.com\",\n    \"password\": \"a232389rasdf2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8081/api/usuarios/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Usuario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8081/api/usuarios/3"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

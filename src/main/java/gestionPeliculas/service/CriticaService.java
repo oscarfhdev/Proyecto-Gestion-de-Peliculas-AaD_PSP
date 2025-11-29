@@ -1,6 +1,7 @@
 package gestionPeliculas.service;
 
 import gestionPeliculas.DTO.CriticaCreateUpdateDTO;
+import gestionPeliculas.DTO.CriticaDTO;
 import gestionPeliculas.DTO.mappers.CriticaMapper;
 import gestionPeliculas.domain.Critica;
 import gestionPeliculas.repository.CriticaRepository;
@@ -20,28 +21,28 @@ public class CriticaService {
     @Autowired
     private CriticaMapper mapper;
 
-    public List<CriticaCreateUpdateDTO> listar() {
+    public List<CriticaDTO> listar() {
             return criticaRepository.findAll()
                 .stream()
                 .map(mapper::toDto)
                 .toList();
         }
 
-    public CriticaCreateUpdateDTO buscarPorId(Long id) {
+    public CriticaDTO buscarPorId(Long id) {
         Critica critica = criticaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Crítica no encontrada con id: " + id));
         return mapper.toDto(critica);
     }
 
     @Transactional
-    public CriticaCreateUpdateDTO agregar(CriticaCreateUpdateDTO dto) {
+    public CriticaDTO agregar(CriticaCreateUpdateDTO dto) {
         Critica critica = mapper.toEntity(dto);
         critica = criticaRepository.save(critica);
         return mapper.toDto(critica);
     }
 
     @Transactional
-    public CriticaCreateUpdateDTO actualizar(Long id, CriticaCreateUpdateDTO dto) {
+    public CriticaDTO actualizar(Long id, CriticaCreateUpdateDTO dto) {
         Critica criticaExistente = criticaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Crítica no encontrada con id: " + id));
 
