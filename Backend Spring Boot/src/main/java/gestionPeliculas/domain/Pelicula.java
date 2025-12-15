@@ -31,6 +31,7 @@ public class Pelicula {
 
     @ManyToOne
     @JoinColumn(name = "director_id")
+
     private Director director;
 
     @ManyToMany
