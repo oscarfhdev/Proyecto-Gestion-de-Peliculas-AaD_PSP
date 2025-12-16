@@ -3,8 +3,8 @@ package gestionPeliculas.service;
 import gestionPeliculas.DTO.PeliculaCreateUpdateDTO;
 import gestionPeliculas.DTO.PeliculaDTO;
 import gestionPeliculas.DTO.mappers.PeliculaMapper;
-import gestionPeliculas.domain.Pelicula;
-import gestionPeliculas.repository.PeliculaRepository;
+import gestionPeliculas.domain.*;
+import gestionPeliculas.repository.*;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -47,6 +47,12 @@ public class PeliculaService {
     @Autowired
     @Lazy
     private PeliculaService self;
+
+    private DirectorRepository directorRepository;
+    private ActorRepository actorRepository;
+    private CategoriaRepository categoriaRepository;
+    private IdiomaRepository idiomaRepository;
+    private PlataformaRepository plataformaRepository;
 
     /*private final List<Pelicula> peliculas = new ArrayList<>();
 
@@ -115,6 +121,39 @@ public class PeliculaService {
         peliculaRepository.deleteById(id);
     }
 
+
+    private void asignarRelaciones(Pelicula pelicula, PeliculaCreateUpdateDTO dto) {
+        // Director (1 a N) - Es un solo ID
+        if (dto.getDirectorId() != null) {
+            Director director = directorRepository.findById(dto.getDirectorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Director no encontrado con id: " + dto.getDirectorId()));
+            pelicula.setDirector(director);
+        }
+
+        // Actores (N a M) - Es una lista de IDs
+        if (dto.getActorIds() != null && !dto.getActorIds().isEmpty()) {
+            List<Actor> actores = actorRepository.findAllById(dto.getActorIds());
+            pelicula.setActores(actores); // Reemplaza la lista actual con la nueva
+        }
+
+        // Categorías
+        if (dto.getCategoriaIds() != null && !dto.getCategoriaIds().isEmpty()) {
+            List<Categoria> categorias = categoriaRepository.findAllById(dto.getCategoriaIds());
+            pelicula.setCategorias(categorias);
+        }
+
+        // Idiomas
+        if (dto.getIdiomaIds() != null && !dto.getIdiomaIds().isEmpty()) {
+            List<Idioma> idiomas = idiomaRepository.findAllById(dto.getIdiomaIds());
+            pelicula.setIdiomas(idiomas);
+        }
+
+        // Plataformas
+        if (dto.getPlataformaIds() != null && !dto.getPlataformaIds().isEmpty()) {
+            List<Plataforma> plataformas = plataformaRepository.findAllById(dto.getPlataformaIds());
+            pelicula.setPlataformas(plataformas);
+        }
+    }
 
 
 

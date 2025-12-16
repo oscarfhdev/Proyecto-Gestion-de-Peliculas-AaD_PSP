@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,4 +28,13 @@ public class PeliculaCreateUpdateDTO {
 
     @NotNull(message = "La valoración es obligatoria")
     private Integer valoracion;
+
+    // Recibimos solo los IDs
+    private Long directorId;
+
+    // El resto N a M (listas de IDs)
+    private List<Long> actorIds;
+    private List<Long> categoriaIds;
+    private List<Long> idiomaIds;
+    private List<Long> plataformaIds;
 }
