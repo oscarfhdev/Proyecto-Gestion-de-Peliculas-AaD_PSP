@@ -29,6 +29,8 @@ public class PeliculaCreateUpdateDTO {
     @NotNull(message = "La valoración es obligatoria")
     private Integer valoracion;
 
+    private String posterUrl;
+
     // Recibimos solo los IDs
     private Long directorId;
 

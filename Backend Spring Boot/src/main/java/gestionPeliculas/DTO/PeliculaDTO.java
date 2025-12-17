@@ -17,6 +17,8 @@ public class PeliculaDTO {
     private LocalDate fechaEstreno;
     private String sinopsis;
     private Integer valoracion;
+    private String posterUrl;
+
 
     private DirectorDTO director;
     private List<ActorDTO> actores;

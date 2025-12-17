@@ -25,6 +25,9 @@ public class Pelicula {
     @Column(name = "fecha_estreno")
     private LocalDate fechaEstreno;
 
+    @Column(name = "poster_url")
+    private String posterUrl;
+
     private String sinopsis;
 
     private int valoracion;
