@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,3 +68,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Estilos personalizados para inputs de Ant Design */
+.ant-input::placeholder,
+.ant-input-password input::placeholder {
+  color: rgba(124, 124, 124, 0.7) !important;
+}
+
+.ant-input-affix-wrapper .ant-input::placeholder {
+  color: rgba(124, 124, 124, 0.7) !important;
+}
+
