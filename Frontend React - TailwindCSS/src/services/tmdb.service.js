@@ -84,6 +84,9 @@ export const getMovieDetails = async (tmdbId) => {
     // Buscar el director en el crew
     const director = credits.crew.find(person => person.job === 'Director');
     const directorNombre = director ? director.name : 'Desconocido';
+    const directorFotoUrl = director && director.profile_path 
+      ? `${IMAGE_BASE_URL}${director.profile_path}` 
+      : '';
 
     // Obtener los 5 primeros actores del cast
     const actoresNombres = credits.cast
@@ -108,9 +111,10 @@ export const getMovieDetails = async (tmdbId) => {
         : '',
       valoracion: Math.max(1, Math.min(5, valoracion)), // Asegurar rango 1-5
       directorNombre,
+      directorFotoUrl,
       actoresNombres,
       categoriasNombres,
-      plataformasNombres: ['Cine'] // Default
+      plataformasNombres: [] // Se generan automáticamente en el backend
     };
   } catch (error) {
     console.error('Error obteniendo detalles de TMDB:', error);
@@ -121,4 +125,81 @@ export const getMovieDetails = async (tmdbId) => {
 export default {
   searchMovies,
   getMovieDetails
+};
+
+/**
+ * Busca personas (directores/actores) en TMDB
+ * @param {string} query - Nombre a buscar
+ * @returns {Promise<Array>} Lista de personas encontradas
+ */
+export const searchPeople = async (query) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/search/person`, {
+      params: {
+        api_key: API_KEY,
+        query,
+        language: 'es-ES',
+        include_adult: false
+      }
+    });
+
+    return response.data.results
+      .filter(person => person.known_for_department === 'Directing')
+      .slice(0, 10)
+      .map(person => {
+        const nameParts = person.name.split(' ');
+        const nombre = nameParts[0];
+        const apellido = nameParts.slice(1).join(' ');
+        
+        return {
+          id: person.id,
+          nombre,
+          apellido,
+          nombreCompleto: person.name,
+          fotoUrl: person.profile_path 
+            ? `${IMAGE_BASE_URL}${person.profile_path}` 
+            : null,
+          department: person.known_for_department
+        };
+      });
+  } catch (error) {
+    console.error('Error buscando personas en TMDB:', error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene detalles de una persona de TMDB
+ * @param {number} personId - ID de la persona en TMDB
+ * @returns {Promise<Object>} Datos de la persona
+ */
+export const getPersonDetails = async (personId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/person/${personId}`, {
+      params: {
+        api_key: API_KEY,
+        language: 'es-ES'
+      }
+    });
+
+    const person = response.data;
+    const nameParts = person.name.split(' ');
+    const nombre = nameParts[0];
+    const apellido = nameParts.slice(1).join(' ');
+
+    return {
+      nombre,
+      apellido,
+      nombreCompleto: person.name,
+      fotoUrl: person.profile_path 
+        ? `${IMAGE_BASE_URL}${person.profile_path}` 
+        : null,
+      biografia: person.biography || '',
+      fechaNacimiento: person.birthday,
+      lugarNacimiento: person.place_of_birth
+    };
+  } catch (error) {
+    console.error('Error obteniendo detalles de persona en TMDB:', error);
+    throw error;
+  }
 };

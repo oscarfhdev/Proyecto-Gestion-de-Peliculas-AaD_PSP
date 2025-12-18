@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PeliculaCreateUpdateDTO {
 
-    @NotBlank(message = "El título es obligatorio, no puede estar vacío ni ser nulo")  // No nulo + no vacío
+    @NotBlank(message = "El título es obligatorio, no puede estar vacío ni ser nulo") // No nulo + no vacío
     private String titulo;
 
     @NotNull(message = "La duración es obligatoria")
@@ -41,6 +41,7 @@ public class PeliculaCreateUpdateDTO {
     private List<Long> plataformaIds;
 
     private String directorNombre;
+    private String directorFotoUrl;
     private List<String> actoresNombres;
     private List<String> categoriasNombres;
     private List<String> idiomasNombres;

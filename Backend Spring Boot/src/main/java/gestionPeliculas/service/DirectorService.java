@@ -23,6 +23,7 @@ public class DirectorService {
     private DirectorMapper mapper;
 
     // Devuelve una lista de tipo directorDTO con los directores
+    @Transactional(readOnly = true)
     public List<DirectorDTO> listar() {
         return directorRepository.findAll()
                 .stream()
@@ -31,9 +32,11 @@ public class DirectorService {
     }
 
     // Nos retorna el director si lo encuentra, de lo contrario lanza código 404
+    @Transactional(readOnly = true)
     public DirectorDTO buscarPorId(Long id) {
         Director director = directorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Director no encontrado con id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Director no encontrado con id: " + id));
         return mapper.toDto(director);
     }
 
@@ -46,10 +49,12 @@ public class DirectorService {
     }
 
     @Transactional
-    // Actualiza el director, si no es posible se revierte (transacctional). Si no la encuentra lanza 404
+    // Actualiza el director, si no es posible se revierte (transacctional). Si no
+    // la encuentra lanza 404
     public DirectorDTO actualizar(Long id, DirectorCreateUpdateDTO dto) {
         Director directorExistente = directorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Director no encontrado con id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Director no encontrado con id: " + id));
 
         mapper.updateEntity(dto, directorExistente);
         Director actualizado = directorRepository.save(directorExistente);

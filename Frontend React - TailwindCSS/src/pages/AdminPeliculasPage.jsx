@@ -43,7 +43,7 @@ import {
 import axios from 'axios';
 import dayjs from 'dayjs';
 import logo from '../assets/logo.png';
-import { searchMovies, getMovieDetails } from '../services/tmdb.service';
+import { searchMovies, getMovieDetails, searchPeople } from '../services/tmdb.service';
 
 const { TextArea } = Input;
 const { confirm } = Modal;
@@ -78,12 +78,23 @@ const AdminPeliculasPage = () => {
     const [tmdbResults, setTmdbResults] = useState([]);
     const [tmdbLoading, setTmdbLoading] = useState(false);
     const [tmdbSearchQuery, setTmdbSearchQuery] = useState('');
+    const [currentDirectorFotoUrl, setCurrentDirectorFotoUrl] = useState('');
 
     // Usuario actual
     const [user, setUser] = useState(null);
 
     // Sección activa
     const [activeSection, setActiveSection] = useState('peliculas');
+
+    // Estados para directores
+    const [directores, setDirectores] = useState([]);
+    const [directorModalVisible, setDirectorModalVisible] = useState(false);
+    const [directorDetailVisible, setDirectorDetailVisible] = useState(false);
+    const [selectedDirector, setSelectedDirector] = useState(null);
+    const [editingDirector, setEditingDirector] = useState(null);
+    const [directorForm] = Form.useForm();
+    const [tmdbDirectorResults, setTmdbDirectorResults] = useState([]);
+    const [tmdbDirectorQuery, setTmdbDirectorQuery] = useState('');
 
     // Secciones del menú
     const menuSections = [
@@ -157,6 +168,184 @@ const AdminPeliculasPage = () => {
         }
     };
 
+    // Cargar directores del backend
+    const cargarDirectores = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`${API_URL}/directores`);
+            setDirectores(response.data);
+        } catch (error) {
+            api.error({
+                message: 'Error',
+                description: 'No se pudieron cargar los directores'
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Cargar datos según sección activa
+    useEffect(() => {
+        if (activeSection === 'peliculas') {
+            cargarPeliculas();
+        } else if (activeSection === 'directores') {
+            cargarDirectores();
+        }
+    }, [activeSection]);
+
+    // Búsqueda TMDB para directores
+    useEffect(() => {
+        if (!tmdbDirectorQuery || tmdbDirectorQuery.length < 2) {
+            setTmdbDirectorResults([]);
+            return;
+        }
+        const timeoutId = setTimeout(async () => {
+            try {
+                const results = await searchPeople(tmdbDirectorQuery);
+                setTmdbDirectorResults(results);
+            } catch (error) {
+                console.error('Error buscando directores:', error);
+            }
+        }, 400);
+        return () => clearTimeout(timeoutId);
+    }, [tmdbDirectorQuery]);
+
+    // CRUD Directores
+    const handleNuevoDirector = () => {
+        setEditingDirector(null);
+        directorForm.resetFields();
+        setTmdbDirectorQuery('');
+        setTmdbDirectorResults([]);
+        setDirectorModalVisible(true);
+    };
+
+    const handleVerDirector = (director) => {
+        setSelectedDirector(director);
+        setDirectorDetailVisible(true);
+    };
+
+    const handleEditarDirector = (director) => {
+        setEditingDirector(director);
+        setDirectorDetailVisible(false);
+        directorForm.setFieldsValue({
+            nombre: director.nombre,
+            apellido: director.apellido,
+            fotoUrl: director.fotoUrl
+        });
+        setDirectorModalVisible(true);
+    };
+
+    const handleEliminarDirector = (id, e) => {
+        e?.stopPropagation();
+        confirm({
+            title: '¿Eliminar director?',
+            icon: <ExclamationCircleOutlined />,
+            content: 'Esta acción no se puede deshacer',
+            okText: 'Sí, eliminar',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: async () => {
+                try {
+                    await axios.delete(`${API_URL}/directores/${id}`);
+                    api.success({ message: 'Director eliminado' });
+                    cargarDirectores();
+                } catch (error) {
+                    api.error({ message: 'Error al eliminar', description: 'El director puede tener películas asociadas' });
+                }
+            }
+        });
+    };
+
+    const handleGuardarDirector = async (values) => {
+        try {
+            const data = {
+                nombre: values.nombre,
+                apellido: values.apellido || '',
+                fotoUrl: values.fotoUrl || ''
+            };
+            if (editingDirector) {
+                await axios.put(`${API_URL}/directores/${editingDirector.id}`, data);
+                api.success({ message: 'Director actualizado' });
+            } else {
+                await axios.post(`${API_URL}/directores`, data);
+                api.success({ message: 'Director creado' });
+            }
+            setDirectorModalVisible(false);
+            cargarDirectores();
+        } catch (error) {
+            api.error({ message: 'Error', description: 'No se pudo guardar el director' });
+        }
+    };
+
+    const handleSelectTmdbDirector = (person) => {
+        directorForm.setFieldsValue({
+            nombre: person.nombre,
+            apellido: person.apellido,
+            fotoUrl: person.fotoUrl || ''
+        });
+        setTmdbDirectorQuery('');
+        setTmdbDirectorResults([]);
+        api.success({ message: 'Datos de TMDB cargados' });
+    };
+
+    // Columnas tabla directores
+    const directorColumns = [
+        {
+            title: 'Foto',
+            dataIndex: 'fotoUrl',
+            key: 'foto',
+            width: 90,
+            render: (url) => (
+                <Avatar
+                    src={url}
+                    size={60}
+                    icon={<UserOutlined />}
+                    style={{ backgroundColor: '#333' }}
+                />
+            )
+        },
+        {
+            title: 'Nombre',
+            dataIndex: 'nombre',
+            key: 'nombre',
+            render: (text) => <span className="font-semibold text-white">{text}</span>
+        },
+        {
+            title: 'Apellido',
+            dataIndex: 'apellido',
+            key: 'apellido',
+            render: (text) => <span className="text-gray-300">{text || '-'}</span>
+        },
+        {
+            title: 'Películas',
+            dataIndex: 'numeroPeliculas',
+            key: 'numeroPeliculas',
+            width: 120,
+            render: (num) => <span className="text-gray-400">{num} películas</span>
+        },
+        {
+            title: 'Acciones',
+            key: 'acciones',
+            width: 120,
+            render: (_, record) => (
+                <Space>
+                    <Button
+                        size="small"
+                        icon={<EditOutlined />}
+                        onClick={(e) => { e.stopPropagation(); handleEditarDirector(record); }}
+                        style={{ backgroundColor: 'transparent', color: '#888', borderColor: '#444' }}
+                    />
+                    <Button
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        onClick={(e) => handleEliminarDirector(record.id, e)}
+                        style={{ backgroundColor: 'transparent', color: '#E50914', borderColor: '#E50914' }}
+                    />
+                </Space>
+            )
+        }
+    ];
+
     // Cerrar sesión
     const handleLogout = () => {
         localStorage.removeItem('user');
@@ -170,6 +359,7 @@ const AdminPeliculasPage = () => {
         form.resetFields();
         setTmdbSearchQuery('');
         setTmdbResults([]);
+        setCurrentDirectorFotoUrl('');
         setModalVisible(true);
     };
 
@@ -233,6 +423,7 @@ const AdminPeliculasPage = () => {
                 valoracion: values.valoracion || 3,
                 posterUrl: values.posterUrl,
                 directorNombre: values.directorNombre,
+                directorFotoUrl: currentDirectorFotoUrl,
                 actoresNombres: values.actoresNombres || [],
                 categoriasNombres: values.categoriasNombres || [],
                 plataformasNombres: [] // Se generan automáticamente en el backend
@@ -275,6 +466,9 @@ const AdminPeliculasPage = () => {
                 categoriasNombres: details.categoriasNombres,
                 plataformasNombres: details.plataformasNombres
             });
+
+            // Guardar la foto del director para enviarla al backend
+            setCurrentDirectorFotoUrl(details.directorFotoUrl || '');
 
             api.success({ message: 'Datos de TMDB cargados' });
             setTmdbSearchQuery('');
@@ -461,6 +655,11 @@ const AdminPeliculasPage = () => {
                                     {peliculas.length} {peliculas.length === 1 ? 'película' : 'películas'} en total
                                 </p>
                             )}
+                            {activeSection === 'directores' && (
+                                <p className="text-gray-500 text-sm text-left">
+                                    {directores.length} {directores.length === 1 ? 'director' : 'directores'} en total
+                                </p>
+                            )}
                         </div>
                         {activeSection === 'peliculas' && (
                             <Button
@@ -471,6 +670,17 @@ const AdminPeliculasPage = () => {
                                 style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
                             >
                                 Nueva Película
+                            </Button>
+                        )}
+                        {activeSection === 'directores' && (
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                onClick={handleNuevoDirector}
+                                size="large"
+                                style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+                            >
+                                Nuevo Director
                             </Button>
                         )}
                     </div>
@@ -501,8 +711,33 @@ const AdminPeliculasPage = () => {
                         </div>
                     )}
 
+                    {/* ============ SECCIÓN DIRECTORES ============ */}
+                    {activeSection === 'directores' && (
+                        <>
+                            <div className="flex items-center gap-2 mb-4 text-gray-500 text-xs text-left">
+                                <InfoCircleOutlined />
+                                <span>Pulsa sobre una fila para ver más información</span>
+                            </div>
+
+                            <div className="bg-[#151515] rounded-lg p-4 border border-[#222]">
+                                <Table
+                                    columns={directorColumns}
+                                    dataSource={directores}
+                                    rowKey="id"
+                                    loading={loading}
+                                    pagination={{ pageSize: 8, showSizeChanger: false, showTotal: (total) => `${total} directores` }}
+                                    onRow={(record) => ({
+                                        onClick: () => handleVerDirector(record),
+                                        style: { cursor: 'pointer' }
+                                    })}
+                                    size="middle"
+                                />
+                            </div>
+                        </>
+                    )}
+
                     {/* Placeholder para otras secciones */}
-                    {activeSection !== 'peliculas' && (
+                    {activeSection !== 'peliculas' && activeSection !== 'directores' && (
                         <div className="bg-[#151515] rounded-lg p-12 border border-[#222] text-center">
                             <div className="text-4xl mb-4">
                                 {menuSections.find(s => s.key === activeSection)?.icon}
@@ -711,15 +946,15 @@ const AdminPeliculasPage = () => {
                                 dataSource={tmdbResults}
                                 renderItem={(movie) => (
                                     <List.Item
-                                        className="cursor-pointer hover:bg-gray-800 px-3"
+                                        className="cursor-pointer hover:bg-gray-800 px-4 py-3"
                                         onClick={() => handleSelectTmdb(movie)}
-                                        style={{ borderColor: '#333' }}
+                                        style={{ borderColor: '#333', padding: '12px 16px' }}
                                     >
-                                        <div className="flex items-center gap-3 w-full">
+                                        <div className="flex items-center gap-4 w-full">
                                             <Avatar
                                                 src={movie.posterUrl}
                                                 shape="square"
-                                                size={45}
+                                                size={50}
                                                 style={{ backgroundColor: '#333', flexShrink: 0 }}
                                             />
                                             <div className="text-left">
@@ -839,6 +1074,176 @@ const AdminPeliculasPage = () => {
                                 style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
                             >
                                 {editingPelicula ? 'Actualizar' : 'Crear Película'}
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal>
+
+                {/* ========== MODALES DIRECTORES ========== */}
+
+                {/* Modal Detalle Director */}
+                <Modal
+                    title={null}
+                    open={directorDetailVisible}
+                    onCancel={() => setDirectorDetailVisible(false)}
+                    footer={[
+                        <Button
+                            key="edit"
+                            icon={<EditOutlined />}
+                            onClick={() => handleEditarDirector(selectedDirector)}
+                            size="large"
+                            style={{ borderColor: '#E50914', color: '#E50914' }}
+                        >
+                            Editar Director
+                        </Button>,
+                        <Button key="close" size="large" onClick={() => setDirectorDetailVisible(false)}>
+                            Cerrar
+                        </Button>
+                    ]}
+                    width={600}
+                    centered
+                >
+                    {selectedDirector && (
+                        <div className="flex gap-6 py-4">
+                            {selectedDirector.fotoUrl && (
+                                <div className="shrink-0">
+                                    <Image
+                                        src={selectedDirector.fotoUrl}
+                                        alt={selectedDirector.nombreCompleto}
+                                        width={150}
+                                        style={{ borderRadius: '8px' }}
+                                    />
+                                </div>
+                            )}
+                            <div className="flex-1">
+                                <h2 className="text-2xl font-bold text-white mb-2">
+                                    {selectedDirector.nombreCompleto}
+                                </h2>
+                                <Divider style={{ borderColor: '#333', margin: '16px 0' }} />
+                                <div className="space-y-3">
+                                    <div>
+                                        <span className="text-gray-500 text-xs uppercase">Nombre</span>
+                                        <p className="text-white">{selectedDirector.nombre}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-gray-500 text-xs uppercase">Apellido</span>
+                                        <p className="text-white">{selectedDirector.apellido || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-gray-500 text-xs uppercase">Películas dirigidas</span>
+                                        <p className="text-white">{selectedDirector.numeroPeliculas} películas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </Modal>
+
+                {/* Modal Formulario Director */}
+                <Modal
+                    title={editingDirector ? 'Editar Director' : 'Nuevo Director'}
+                    open={directorModalVisible}
+                    onCancel={() => { setDirectorModalVisible(false); setTmdbDirectorResults([]); setTmdbDirectorQuery(''); }}
+                    footer={null}
+                    width={600}
+                    centered
+                >
+                    {/* Búsqueda TMDB Directores */}
+                    <div className="mb-4">
+                        <label className="text-gray-400 text-sm mb-2 block">Buscar en TMDB para auto-rellenar</label>
+                        <Input
+                            placeholder="Escribe el nombre del director..."
+                            value={tmdbDirectorQuery}
+                            onChange={(e) => setTmdbDirectorQuery(e.target.value)}
+                            prefix={<SearchOutlined className="text-gray-500" />}
+                            size="large"
+                            allowClear
+                        />
+                    </div>
+
+                    {/* Resultados TMDB */}
+                    {tmdbDirectorResults.length > 0 && (
+                        <div
+                            className="mb-6 max-h-48 overflow-y-auto rounded-lg border border-gray-700"
+                            style={{ backgroundColor: '#1a1a1a' }}
+                        >
+                            <List
+                                dataSource={tmdbDirectorResults}
+                                renderItem={(person) => (
+                                    <List.Item
+                                        className="cursor-pointer hover:bg-gray-800 px-4 py-3"
+                                        onClick={() => handleSelectTmdbDirector(person)}
+                                        style={{ borderColor: '#333', padding: '12px 16px' }}
+                                    >
+                                        <div className="flex items-center gap-4 w-full">
+                                            <Avatar
+                                                src={person.fotoUrl}
+                                                size={50}
+                                                icon={<UserOutlined />}
+                                                style={{ backgroundColor: '#333', flexShrink: 0 }}
+                                            />
+                                            <div className="text-left">
+                                                <div className="text-white font-medium">{person.nombreCompleto}</div>
+                                                <div className="text-gray-500 text-sm">Director</div>
+                                            </div>
+                                        </div>
+                                    </List.Item>
+                                )}
+                            />
+                        </div>
+                    )}
+
+                    <Form
+                        form={directorForm}
+                        layout="vertical"
+                        onFinish={handleGuardarDirector}
+                        requiredMark={false}
+                    >
+                        <div className="grid grid-cols-2 gap-4">
+                            <Form.Item
+                                name="nombre"
+                                label="Nombre"
+                                rules={[{ required: true, message: 'El nombre es obligatorio' }]}
+                            >
+                                <Input placeholder="Nombre" />
+                            </Form.Item>
+                            <Form.Item name="apellido" label="Apellido">
+                                <Input placeholder="Apellido" />
+                            </Form.Item>
+                        </div>
+
+                        <Form.Item name="fotoUrl" label="URL de Foto">
+                            <Input placeholder="URL de la foto" />
+                        </Form.Item>
+
+                        {/* Preview de foto */}
+                        <Form.Item noStyle shouldUpdate={(prev, curr) => prev.fotoUrl !== curr.fotoUrl}>
+                            {({ getFieldValue }) => {
+                                const url = getFieldValue('fotoUrl');
+                                return url ? (
+                                    <div className="mb-4 flex justify-center">
+                                        <Image
+                                            src={url}
+                                            alt="Preview"
+                                            width={100}
+                                            style={{ borderRadius: '8px' }}
+                                        />
+                                    </div>
+                                ) : null;
+                            }}
+                        </Form.Item>
+
+                        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-700">
+                            <Button onClick={() => { setDirectorModalVisible(false); setTmdbDirectorResults([]); setTmdbDirectorQuery(''); }} size="large">
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                size="large"
+                                style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+                            >
+                                {editingDirector ? 'Actualizar' : 'Crear Director'}
                             </Button>
                         </div>
                     </Form>

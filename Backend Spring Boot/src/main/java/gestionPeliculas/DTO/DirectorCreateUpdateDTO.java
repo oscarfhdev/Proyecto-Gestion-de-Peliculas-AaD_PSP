@@ -11,4 +11,8 @@ import lombok.NoArgsConstructor;
 public class DirectorCreateUpdateDTO {
     @NotBlank
     private String nombre;
+
+    private String apellido;
+
+    private String fotoUrl;
 }

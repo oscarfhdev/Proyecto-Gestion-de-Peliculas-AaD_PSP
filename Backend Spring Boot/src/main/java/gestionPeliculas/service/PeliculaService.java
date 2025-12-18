@@ -169,12 +169,27 @@ public class PeliculaService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Director ID no encontrado"));
             pelicula.setDirector(d);
         } else if (dto.getDirectorNombre() != null && !dto.getDirectorNombre().isBlank()) {
+            final String fotoUrl = dto.getDirectorFotoUrl();
             Director d = directorRepository.findByNombre(dto.getDirectorNombre())
                     .orElseGet(() -> {
                         Director nuevo = new Director();
-                        nuevo.setNombre(dto.getDirectorNombre());
+                        // Separar nombre y apellido
+                        String[] partes = dto.getDirectorNombre().split(" ", 2);
+                        nuevo.setNombre(partes[0]);
+                        if (partes.length > 1) {
+                            nuevo.setApellido(partes[1]);
+                        }
+                        // Guardar foto si viene de TMDB
+                        if (fotoUrl != null && !fotoUrl.isBlank()) {
+                            nuevo.setFotoUrl(fotoUrl);
+                        }
                         return directorRepository.save(nuevo);
                     });
+            // Actualizar foto si no la tenía y viene en el DTO
+            if (d.getFotoUrl() == null && fotoUrl != null && !fotoUrl.isBlank()) {
+                d.setFotoUrl(fotoUrl);
+                directorRepository.save(d);
+            }
             pelicula.setDirector(d);
         }
 
