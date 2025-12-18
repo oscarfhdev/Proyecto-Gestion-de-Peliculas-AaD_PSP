@@ -43,7 +43,7 @@ import {
 import axios from 'axios';
 import dayjs from 'dayjs';
 import logo from '../assets/logo.png';
-import { searchMovies, getMovieDetails, searchPeople } from '../services/tmdb.service';
+import { searchMovies, getMovieDetails, searchPeople, searchActors } from '../services/tmdb.service';
 
 const { TextArea } = Input;
 const { confirm } = Modal;
@@ -79,6 +79,7 @@ const AdminPeliculasPage = () => {
     const [tmdbLoading, setTmdbLoading] = useState(false);
     const [tmdbSearchQuery, setTmdbSearchQuery] = useState('');
     const [currentDirectorFotoUrl, setCurrentDirectorFotoUrl] = useState('');
+    const [currentActoresData, setCurrentActoresData] = useState([]);
 
     // Usuario actual
     const [user, setUser] = useState(null);
@@ -95,6 +96,24 @@ const AdminPeliculasPage = () => {
     const [directorForm] = Form.useForm();
     const [tmdbDirectorResults, setTmdbDirectorResults] = useState([]);
     const [tmdbDirectorQuery, setTmdbDirectorQuery] = useState('');
+
+    // Estados para actores
+    const [actores, setActores] = useState([]);
+    const [actorModalVisible, setActorModalVisible] = useState(false);
+    const [actorDetailVisible, setActorDetailVisible] = useState(false);
+    const [selectedActor, setSelectedActor] = useState(null);
+    const [editingActor, setEditingActor] = useState(null);
+    const [actorForm] = Form.useForm();
+    const [tmdbActorResults, setTmdbActorResults] = useState([]);
+    const [tmdbActorQuery, setTmdbActorQuery] = useState('');
+
+    // Estados para plataformas
+    const [plataformas, setPlataformas] = useState([]);
+    const [plataformaModalVisible, setPlataformaModalVisible] = useState(false);
+    const [plataformaDetailVisible, setPlataformaDetailVisible] = useState(false);
+    const [selectedPlataforma, setSelectedPlataforma] = useState(null);
+    const [editingPlataforma, setEditingPlataforma] = useState(null);
+    const [plataformaForm] = Form.useForm();
 
     // Secciones del menú
     const menuSections = [
@@ -190,6 +209,10 @@ const AdminPeliculasPage = () => {
             cargarPeliculas();
         } else if (activeSection === 'directores') {
             cargarDirectores();
+        } else if (activeSection === 'actores') {
+            cargarActores();
+        } else if (activeSection === 'plataformas') {
+            cargarPlataformas();
         }
     }, [activeSection]);
 
@@ -346,6 +369,309 @@ const AdminPeliculasPage = () => {
         }
     ];
 
+    // ========== FUNCIONES CRUD ACTORES ==========
+
+    // Cargar actores del backend
+    const cargarActores = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`${API_URL}/actores`);
+            setActores(response.data);
+        } catch (error) {
+            api.error({ message: 'Error', description: 'No se pudieron cargar los actores' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Búsqueda TMDB para actores
+    useEffect(() => {
+        if (!tmdbActorQuery || tmdbActorQuery.length < 2) {
+            setTmdbActorResults([]);
+            return;
+        }
+        const timeoutId = setTimeout(async () => {
+            try {
+                const results = await searchActors(tmdbActorQuery);
+                setTmdbActorResults(results);
+            } catch (error) {
+                console.error('Error buscando actores:', error);
+            }
+        }, 400);
+        return () => clearTimeout(timeoutId);
+    }, [tmdbActorQuery]);
+
+    const handleNuevoActor = () => {
+        setEditingActor(null);
+        actorForm.resetFields();
+        setTmdbActorQuery('');
+        setTmdbActorResults([]);
+        setActorModalVisible(true);
+    };
+
+    const handleVerActor = (actor) => {
+        setSelectedActor(actor);
+        setActorDetailVisible(true);
+    };
+
+    const handleEditarActor = (actor) => {
+        setEditingActor(actor);
+        setActorDetailVisible(false);
+        actorForm.setFieldsValue({
+            nombre: actor.nombre,
+            apellido: actor.apellido,
+            fotoUrl: actor.fotoUrl
+        });
+        setActorModalVisible(true);
+    };
+
+    const handleEliminarActor = (id, e) => {
+        e?.stopPropagation();
+        confirm({
+            title: '¿Eliminar actor?',
+            icon: <ExclamationCircleOutlined />,
+            content: 'Esta acción no se puede deshacer',
+            okText: 'Sí, eliminar',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: async () => {
+                try {
+                    await axios.delete(`${API_URL}/actores/${id}`);
+                    api.success({ message: 'Actor eliminado' });
+                    cargarActores();
+                } catch (error) {
+                    api.error({ message: 'Error al eliminar', description: 'El actor puede tener películas asociadas' });
+                }
+            }
+        });
+    };
+
+    const handleGuardarActor = async (values) => {
+        try {
+            const data = {
+                nombre: values.nombre,
+                apellido: values.apellido || '',
+                fotoUrl: values.fotoUrl || ''
+            };
+            if (editingActor) {
+                await axios.put(`${API_URL}/actores/${editingActor.id}`, data);
+                api.success({ message: 'Actor actualizado' });
+            } else {
+                await axios.post(`${API_URL}/actores`, data);
+                api.success({ message: 'Actor creado' });
+            }
+            setActorModalVisible(false);
+            cargarActores();
+        } catch (error) {
+            api.error({ message: 'Error', description: 'No se pudo guardar el actor' });
+        }
+    };
+
+    const handleSelectTmdbActor = (person) => {
+        actorForm.setFieldsValue({
+            nombre: person.nombre,
+            apellido: person.apellido,
+            fotoUrl: person.fotoUrl || ''
+        });
+        setTmdbActorQuery('');
+        setTmdbActorResults([]);
+        api.success({ message: 'Datos de TMDB cargados' });
+    };
+
+    // Columnas tabla actores
+    const actorColumns = [
+        {
+            title: 'Foto',
+            dataIndex: 'fotoUrl',
+            key: 'foto',
+            width: 90,
+            render: (url) => (
+                <Avatar
+                    src={url}
+                    size={60}
+                    icon={<UserOutlined />}
+                    style={{ backgroundColor: '#333' }}
+                />
+            )
+        },
+        {
+            title: 'Nombre',
+            dataIndex: 'nombre',
+            key: 'nombre',
+            render: (text) => <span className="font-semibold text-white">{text}</span>
+        },
+        {
+            title: 'Apellido',
+            dataIndex: 'apellido',
+            key: 'apellido',
+            render: (text) => <span className="text-gray-300">{text || '-'}</span>
+        },
+        {
+            title: 'Películas',
+            dataIndex: 'numeroPeliculas',
+            key: 'numeroPeliculas',
+            width: 120,
+            render: (num) => <span className="text-gray-400">{num} películas</span>
+        },
+        {
+            title: 'Acciones',
+            key: 'acciones',
+            width: 120,
+            render: (_, record) => (
+                <Space>
+                    <Button
+                        size="small"
+                        icon={<EditOutlined />}
+                        onClick={(e) => { e.stopPropagation(); handleEditarActor(record); }}
+                        style={{ backgroundColor: 'transparent', color: '#888', borderColor: '#444' }}
+                    />
+                    <Button
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        onClick={(e) => handleEliminarActor(record.id, e)}
+                        style={{ backgroundColor: 'transparent', color: '#E50914', borderColor: '#E50914' }}
+                    />
+                </Space>
+            )
+        }
+    ];
+
+    // ========== FUNCIONES CRUD PLATAFORMAS ==========
+
+    // Cargar plataformas del backend
+    const cargarPlataformas = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`${API_URL}/plataformas`);
+            setPlataformas(response.data);
+        } catch (error) {
+            api.error({ message: 'Error', description: 'No se pudieron cargar las plataformas' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleNuevaPlataforma = () => {
+        setEditingPlataforma(null);
+        plataformaForm.resetFields();
+        setPlataformaModalVisible(true);
+    };
+
+    const handleVerPlataforma = (plataforma) => {
+        setSelectedPlataforma(plataforma);
+        setPlataformaDetailVisible(true);
+    };
+
+    const handleEditarPlataforma = (plataforma) => {
+        setEditingPlataforma(plataforma);
+        setPlataformaDetailVisible(false);
+        plataformaForm.setFieldsValue({
+            nombre: plataforma.nombre,
+            url: plataforma.url
+        });
+        setPlataformaModalVisible(true);
+    };
+
+    const handleEliminarPlataforma = (id, e) => {
+        e?.stopPropagation();
+        confirm({
+            title: '¿Eliminar plataforma?',
+            icon: <ExclamationCircleOutlined />,
+            content: 'Esta acción no se puede deshacer',
+            okText: 'Sí, eliminar',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: async () => {
+                try {
+                    await axios.delete(`${API_URL}/plataformas/${id}`);
+                    api.success({ message: 'Plataforma eliminada' });
+                    cargarPlataformas();
+                } catch (error) {
+                    api.error({ message: 'Error al eliminar', description: 'La plataforma puede tener películas asociadas' });
+                }
+            }
+        });
+    };
+
+    const handleGuardarPlataforma = async (values) => {
+        try {
+            const data = {
+                nombre: values.nombre,
+                url: values.url || ''
+            };
+            if (editingPlataforma) {
+                await axios.put(`${API_URL}/plataformas/${editingPlataforma.id}`, data);
+                api.success({ message: 'Plataforma actualizada' });
+            } else {
+                await axios.post(`${API_URL}/plataformas`, data);
+                api.success({ message: 'Plataforma creada' });
+            }
+            setPlataformaModalVisible(false);
+            cargarPlataformas();
+        } catch (error) {
+            api.error({ message: 'Error', description: 'No se pudo guardar la plataforma' });
+        }
+    };
+
+    // Columnas tabla plataformas
+    const plataformaColumns = [
+        {
+            title: 'Logo',
+            dataIndex: 'url',
+            key: 'logo',
+            width: 120,
+            render: (url) => (
+                url ? (
+                    <img
+                        src={url}
+                        alt="Logo"
+                        style={{ maxWidth: 80, maxHeight: 40, objectFit: 'contain' }}
+                    />
+                ) : (
+                    <Avatar
+                        size={40}
+                        icon={<PlayCircleOutlined />}
+                        style={{ backgroundColor: '#333' }}
+                    />
+                )
+            )
+        },
+        {
+            title: 'Nombre',
+            dataIndex: 'nombre',
+            key: 'nombre',
+            render: (text) => <span className="font-semibold text-white">{text}</span>
+        },
+        {
+            title: 'Películas',
+            dataIndex: 'numeroPeliculas',
+            key: 'numeroPeliculas',
+            width: 120,
+            render: (num) => <span className="text-gray-400">{num} películas</span>
+        },
+        {
+            title: 'Acciones',
+            key: 'acciones',
+            width: 120,
+            render: (_, record) => (
+                <Space>
+                    <Button
+                        size="small"
+                        icon={<EditOutlined />}
+                        onClick={(e) => { e.stopPropagation(); handleEditarPlataforma(record); }}
+                        style={{ backgroundColor: 'transparent', color: '#888', borderColor: '#444' }}
+                    />
+                    <Button
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        onClick={(e) => handleEliminarPlataforma(record.id, e)}
+                        style={{ backgroundColor: 'transparent', color: '#E50914', borderColor: '#E50914' }}
+                    />
+                </Space>
+            )
+        }
+    ];
+
     // Cerrar sesión
     const handleLogout = () => {
         localStorage.removeItem('user');
@@ -360,6 +686,7 @@ const AdminPeliculasPage = () => {
         setTmdbSearchQuery('');
         setTmdbResults([]);
         setCurrentDirectorFotoUrl('');
+        setCurrentActoresData([]);
         setModalVisible(true);
     };
 
@@ -425,6 +752,7 @@ const AdminPeliculasPage = () => {
                 directorNombre: values.directorNombre,
                 directorFotoUrl: currentDirectorFotoUrl,
                 actoresNombres: values.actoresNombres || [],
+                actoresData: currentActoresData.length > 0 ? currentActoresData : null,
                 categoriasNombres: values.categoriasNombres || [],
                 plataformasNombres: [] // Se generan automáticamente en el backend
             };
@@ -469,6 +797,8 @@ const AdminPeliculasPage = () => {
 
             // Guardar la foto del director para enviarla al backend
             setCurrentDirectorFotoUrl(details.directorFotoUrl || '');
+            // Guardar datos de actores con fotos para enviarlos al backend
+            setCurrentActoresData(details.actoresData || []);
 
             api.success({ message: 'Datos de TMDB cargados' });
             setTmdbSearchQuery('');
@@ -660,6 +990,16 @@ const AdminPeliculasPage = () => {
                                     {directores.length} {directores.length === 1 ? 'director' : 'directores'} en total
                                 </p>
                             )}
+                            {activeSection === 'actores' && (
+                                <p className="text-gray-500 text-sm text-left">
+                                    {actores.length} {actores.length === 1 ? 'actor' : 'actores'} en total
+                                </p>
+                            )}
+                            {activeSection === 'plataformas' && (
+                                <p className="text-gray-500 text-sm text-left">
+                                    {plataformas.length} {plataformas.length === 1 ? 'plataforma' : 'plataformas'} en total
+                                </p>
+                            )}
                         </div>
                         {activeSection === 'peliculas' && (
                             <Button
@@ -681,6 +1021,28 @@ const AdminPeliculasPage = () => {
                                 style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
                             >
                                 Nuevo Director
+                            </Button>
+                        )}
+                        {activeSection === 'actores' && (
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                onClick={handleNuevoActor}
+                                size="large"
+                                style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+                            >
+                                Nuevo Actor
+                            </Button>
+                        )}
+                        {activeSection === 'plataformas' && (
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                onClick={handleNuevaPlataforma}
+                                size="large"
+                                style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+                            >
+                                Nueva Plataforma
                             </Button>
                         )}
                     </div>
@@ -736,8 +1098,58 @@ const AdminPeliculasPage = () => {
                         </>
                     )}
 
+                    {/* ============ SECCIÓN ACTORES ============ */}
+                    {activeSection === 'actores' && (
+                        <>
+                            <div className="flex items-center gap-2 mb-4 text-gray-500 text-xs text-left">
+                                <InfoCircleOutlined />
+                                <span>Pulsa sobre una fila para ver más información</span>
+                            </div>
+
+                            <div className="bg-[#151515] rounded-lg p-4 border border-[#222]">
+                                <Table
+                                    columns={actorColumns}
+                                    dataSource={actores}
+                                    rowKey="id"
+                                    loading={loading}
+                                    pagination={{ pageSize: 8, showSizeChanger: false, showTotal: (total) => `${total} actores` }}
+                                    onRow={(record) => ({
+                                        onClick: () => handleVerActor(record),
+                                        style: { cursor: 'pointer' }
+                                    })}
+                                    size="middle"
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    {/* ============ SECCIÓN PLATAFORMAS ============ */}
+                    {activeSection === 'plataformas' && (
+                        <>
+                            <div className="flex items-center gap-2 mb-4 text-gray-500 text-xs text-left">
+                                <InfoCircleOutlined />
+                                <span>Pulsa sobre una fila para ver más información</span>
+                            </div>
+
+                            <div className="bg-[#151515] rounded-lg p-4 border border-[#222]">
+                                <Table
+                                    columns={plataformaColumns}
+                                    dataSource={plataformas}
+                                    rowKey="id"
+                                    loading={loading}
+                                    pagination={{ pageSize: 8, showSizeChanger: false, showTotal: (total) => `${total} plataformas` }}
+                                    onRow={(record) => ({
+                                        onClick: () => handleVerPlataforma(record),
+                                        style: { cursor: 'pointer' }
+                                    })}
+                                    size="middle"
+                                />
+                            </div>
+                        </>
+                    )}
+
                     {/* Placeholder para otras secciones */}
-                    {activeSection !== 'peliculas' && activeSection !== 'directores' && (
+                    {activeSection !== 'peliculas' && activeSection !== 'directores' && activeSection !== 'actores' && activeSection !== 'plataformas' && (
                         <div className="bg-[#151515] rounded-lg p-12 border border-[#222] text-center">
                             <div className="text-4xl mb-4">
                                 {menuSections.find(s => s.key === activeSection)?.icon}
@@ -852,22 +1264,40 @@ const AdminPeliculasPage = () => {
                                     {/* Plataformas */}
                                     <div className="flex-1">
                                         <h4 className="text-gray-500 text-xs uppercase tracking-wider mb-3">Disponible en</h4>
-                                        <Space wrap>
-                                            {selectedPelicula.plataformas?.map((plat, i) => (
-                                                <Tag
-                                                    key={i}
-                                                    style={{
-                                                        backgroundColor: '#1a1a1a',
-                                                        borderColor: '#333',
-                                                        color: '#fff',
-                                                        fontSize: '13px'
-                                                    }}
-                                                >
-                                                    <span className="mr-1">{PLATFORM_ICONS[plat.nombre] || '📺'}</span>
-                                                    {plat.nombre}
-                                                </Tag>
-                                            )) || <span className="text-gray-500">Sin plataformas</span>}
-                                        </Space>
+                                        <div className="flex gap-3 flex-wrap">
+                                            {selectedPelicula.plataformas?.length > 0 ? (
+                                                selectedPelicula.plataformas.map((plat, i) => (
+                                                    plat.url ? (
+                                                        <img
+                                                            key={i}
+                                                            src={plat.url}
+                                                            alt={plat.nombre}
+                                                            title={plat.nombre}
+                                                            style={{
+                                                                maxWidth: 90,
+                                                                maxHeight: 45,
+                                                                objectFit: 'contain',
+                                                                borderRadius: 4
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <Tag
+                                                            key={i}
+                                                            style={{
+                                                                backgroundColor: '#1a1a1a',
+                                                                borderColor: '#333',
+                                                                color: '#fff',
+                                                                fontSize: '13px'
+                                                            }}
+                                                        >
+                                                            {plat.nombre}
+                                                        </Tag>
+                                                    )
+                                                ))
+                                            ) : (
+                                                <span className="text-gray-500">Sin plataformas</span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1244,6 +1674,288 @@ const AdminPeliculasPage = () => {
                                 style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
                             >
                                 {editingDirector ? 'Actualizar' : 'Crear Director'}
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal>
+
+                {/* ========== MODALES ACTORES ========== */}
+
+                {/* Modal Detalle Actor */}
+                <Modal
+                    title={null}
+                    open={actorDetailVisible}
+                    onCancel={() => setActorDetailVisible(false)}
+                    footer={[
+                        <Button
+                            key="edit"
+                            icon={<EditOutlined />}
+                            onClick={() => handleEditarActor(selectedActor)}
+                            size="large"
+                            style={{ borderColor: '#E50914', color: '#E50914' }}
+                        >
+                            Editar Actor
+                        </Button>,
+                        <Button key="close" size="large" onClick={() => setActorDetailVisible(false)}>
+                            Cerrar
+                        </Button>
+                    ]}
+                    width={600}
+                    centered
+                >
+                    {selectedActor && (
+                        <div className="flex gap-6 py-4">
+                            {selectedActor.fotoUrl && (
+                                <div className="shrink-0">
+                                    <Image
+                                        src={selectedActor.fotoUrl}
+                                        alt={selectedActor.nombreCompleto}
+                                        width={150}
+                                        style={{ borderRadius: '8px' }}
+                                    />
+                                </div>
+                            )}
+                            <div className="flex-1">
+                                <h2 className="text-2xl font-bold text-white mb-2">
+                                    {selectedActor.nombreCompleto}
+                                </h2>
+                                <Divider style={{ borderColor: '#333', margin: '16px 0' }} />
+                                <div className="space-y-3">
+                                    <div>
+                                        <span className="text-gray-500 text-xs uppercase">Nombre</span>
+                                        <p className="text-white">{selectedActor.nombre}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-gray-500 text-xs uppercase">Apellido</span>
+                                        <p className="text-white">{selectedActor.apellido || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-gray-500 text-xs uppercase">Películas</span>
+                                        <p className="text-white">{selectedActor.numeroPeliculas} películas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </Modal>
+
+                {/* Modal Formulario Actor */}
+                <Modal
+                    title={editingActor ? 'Editar Actor' : 'Nuevo Actor'}
+                    open={actorModalVisible}
+                    onCancel={() => { setActorModalVisible(false); setTmdbActorResults([]); setTmdbActorQuery(''); }}
+                    footer={null}
+                    width={600}
+                    centered
+                >
+                    {/* Búsqueda TMDB Actores */}
+                    <div className="mb-4">
+                        <label className="text-gray-400 text-sm mb-2 block">Buscar en TMDB para auto-rellenar</label>
+                        <Input
+                            placeholder="Escribe el nombre del actor..."
+                            value={tmdbActorQuery}
+                            onChange={(e) => setTmdbActorQuery(e.target.value)}
+                            prefix={<SearchOutlined className="text-gray-500" />}
+                            size="large"
+                            allowClear
+                        />
+                    </div>
+
+                    {/* Resultados TMDB */}
+                    {tmdbActorResults.length > 0 && (
+                        <div
+                            className="mb-6 max-h-48 overflow-y-auto rounded-lg border border-gray-700"
+                            style={{ backgroundColor: '#1a1a1a' }}
+                        >
+                            <List
+                                dataSource={tmdbActorResults}
+                                renderItem={(person) => (
+                                    <List.Item
+                                        className="cursor-pointer hover:bg-gray-800 px-4 py-3"
+                                        onClick={() => handleSelectTmdbActor(person)}
+                                        style={{ borderColor: '#333', padding: '12px 16px' }}
+                                    >
+                                        <div className="flex items-center gap-4 w-full">
+                                            <Avatar
+                                                src={person.fotoUrl}
+                                                size={50}
+                                                icon={<UserOutlined />}
+                                                style={{ backgroundColor: '#333', flexShrink: 0 }}
+                                            />
+                                            <div className="text-left">
+                                                <div className="text-white font-medium">{person.nombreCompleto}</div>
+                                                <div className="text-gray-500 text-sm">Actor</div>
+                                            </div>
+                                        </div>
+                                    </List.Item>
+                                )}
+                            />
+                        </div>
+                    )}
+
+                    <Form
+                        form={actorForm}
+                        layout="vertical"
+                        onFinish={handleGuardarActor}
+                        requiredMark={false}
+                    >
+                        <div className="grid grid-cols-2 gap-4">
+                            <Form.Item
+                                name="nombre"
+                                label="Nombre"
+                                rules={[{ required: true, message: 'El nombre es obligatorio' }]}
+                            >
+                                <Input placeholder="Nombre" />
+                            </Form.Item>
+                            <Form.Item name="apellido" label="Apellido">
+                                <Input placeholder="Apellido" />
+                            </Form.Item>
+                        </div>
+
+                        <Form.Item name="fotoUrl" label="URL de Foto">
+                            <Input placeholder="URL de la foto" />
+                        </Form.Item>
+
+                        {/* Preview de foto */}
+                        <Form.Item noStyle shouldUpdate={(prev, curr) => prev.fotoUrl !== curr.fotoUrl}>
+                            {({ getFieldValue }) => {
+                                const url = getFieldValue('fotoUrl');
+                                return url ? (
+                                    <div className="mb-4 flex justify-center">
+                                        <Image
+                                            src={url}
+                                            alt="Preview"
+                                            width={100}
+                                            style={{ borderRadius: '8px' }}
+                                        />
+                                    </div>
+                                ) : null;
+                            }}
+                        </Form.Item>
+
+                        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-700">
+                            <Button onClick={() => { setActorModalVisible(false); setTmdbActorResults([]); setTmdbActorQuery(''); }} size="large">
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                size="large"
+                                style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+                            >
+                                {editingActor ? 'Actualizar' : 'Crear Actor'}
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal>
+
+                {/* ========== MODALES PLATAFORMAS ========== */}
+
+                {/* Modal Detalle Plataforma */}
+                <Modal
+                    title={null}
+                    open={plataformaDetailVisible}
+                    onCancel={() => setPlataformaDetailVisible(false)}
+                    footer={[
+                        <Button
+                            key="edit"
+                            icon={<EditOutlined />}
+                            onClick={() => handleEditarPlataforma(selectedPlataforma)}
+                            size="large"
+                            style={{ borderColor: '#E50914', color: '#E50914' }}
+                        >
+                            Editar Plataforma
+                        </Button>,
+                        <Button key="close" size="large" onClick={() => setPlataformaDetailVisible(false)}>
+                            Cerrar
+                        </Button>
+                    ]}
+                    width={500}
+                    centered
+                >
+                    {selectedPlataforma && (
+                        <div className="flex flex-col items-center py-4">
+                            {selectedPlataforma.url && (
+                                <div className="mb-6">
+                                    <img
+                                        src={selectedPlataforma.url}
+                                        alt={selectedPlataforma.nombre}
+                                        style={{ maxWidth: 200, maxHeight: 100, objectFit: 'contain' }}
+                                    />
+                                </div>
+                            )}
+                            <h2 className="text-2xl font-bold text-white mb-2">
+                                {selectedPlataforma.nombre}
+                            </h2>
+                            <Divider style={{ borderColor: '#333', margin: '16px 0' }} />
+                            <div className="space-y-3 w-full">
+                                <div>
+                                    <span className="text-gray-500 text-xs uppercase">Películas</span>
+                                    <p className="text-white">{selectedPlataforma.numeroPeliculas} películas</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </Modal>
+
+                {/* Modal Formulario Plataforma */}
+                <Modal
+                    title={editingPlataforma ? 'Editar Plataforma' : 'Nueva Plataforma'}
+                    open={plataformaModalVisible}
+                    onCancel={() => setPlataformaModalVisible(false)}
+                    footer={null}
+                    width={500}
+                    centered
+                >
+                    <Form
+                        form={plataformaForm}
+                        layout="vertical"
+                        onFinish={handleGuardarPlataforma}
+                        requiredMark={false}
+                    >
+                        <Form.Item
+                            name="nombre"
+                            label="Nombre"
+                            rules={[{ required: true, message: 'El nombre es obligatorio' }]}
+                        >
+                            <Input placeholder="Nombre de la plataforma" />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="url"
+                            label="URL del Logo"
+                            rules={[{ required: true, message: 'La URL del logo es obligatoria' }]}
+                        >
+                            <Input placeholder="URL de la imagen del logo" />
+                        </Form.Item>
+
+                        {/* Preview de logo */}
+                        <Form.Item noStyle shouldUpdate={(prev, curr) => prev.url !== curr.url}>
+                            {({ getFieldValue }) => {
+                                const url = getFieldValue('url');
+                                return url ? (
+                                    <div className="mb-4 flex justify-center">
+                                        <img
+                                            src={url}
+                                            alt="Preview"
+                                            style={{ maxWidth: 150, maxHeight: 80, objectFit: 'contain' }}
+                                        />
+                                    </div>
+                                ) : null;
+                            }}
+                        </Form.Item>
+
+                        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-700">
+                            <Button onClick={() => setPlataformaModalVisible(false)} size="large">
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                size="large"
+                                style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+                            >
+                                {editingPlataforma ? 'Actualizar' : 'Crear Plataforma'}
                             </Button>
                         </div>
                     </Form>

@@ -21,6 +21,7 @@ public class PlataformaService {
     @Autowired
     private PlataformaMapper mapper;
 
+    @Transactional(readOnly = true)
     public List<PlataformaDTO> listar() {
         return plataformaRepository.findAll()
                 .stream()
@@ -28,9 +29,11 @@ public class PlataformaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public PlataformaDTO buscarPorId(Long id) {
         Plataforma plataforma = plataformaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plataforma no encontrada con id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Plataforma no encontrada con id: " + id));
         return mapper.toDto(plataforma);
     }
 
@@ -44,7 +47,8 @@ public class PlataformaService {
     @Transactional
     public PlataformaDTO actualizar(Long id, PlataformaCreateUpdateDTO dto) {
         Plataforma existente = plataformaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plataforma no encontrada con id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Plataforma no encontrada con id: " + id));
 
         mapper.updateEntity(dto, existente);
         Plataforma actualizado = plataformaRepository.save(existente);

@@ -18,16 +18,29 @@ public class Actor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nombre;
 
-    // Relación 1:N con película
+    private String apellido;
+
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    // Relación N:M con película
     @ManyToMany(mappedBy = "actores")
     @JsonIgnore
-    private List<Pelicula> peliculas = new ArrayList<>();;
+    private List<Pelicula> peliculas = new ArrayList<>();
 
-    public void addPelicula(Pelicula pelicula){
+    public void addPelicula(Pelicula pelicula) {
         peliculas.add(pelicula);
         pelicula.getActores().add(this);
+    }
+
+    // Método helper para nombre completo
+    public String getNombreCompleto() {
+        if (apellido != null && !apellido.isBlank()) {
+            return nombre + " " + apellido;
+        }
+        return nombre;
     }
 }

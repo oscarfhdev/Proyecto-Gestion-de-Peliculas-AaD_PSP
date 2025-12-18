@@ -196,6 +196,34 @@ public class PeliculaService {
         // --- ACTORES ---
         if (dto.getActorIds() != null && !dto.getActorIds().isEmpty()) {
             pelicula.setActores(actorRepository.findAllById(dto.getActorIds()));
+        } else if (dto.getActoresData() != null && !dto.getActoresData().isEmpty()) {
+            // Priorizar actoresData que incluye fotos desde TMDB
+            List<Actor> listaActores = new ArrayList<>();
+            for (var actorData : dto.getActoresData()) {
+                String nombreCompleto = actorData.getNombre() +
+                        (actorData.getApellido() != null && !actorData.getApellido().isBlank()
+                                ? " " + actorData.getApellido()
+                                : "");
+                final String fotoUrl = actorData.getFotoUrl();
+
+                Actor a = actorRepository.findByNombre(actorData.getNombre())
+                        .orElseGet(() -> {
+                            Actor nuevo = new Actor();
+                            nuevo.setNombre(actorData.getNombre());
+                            nuevo.setApellido(actorData.getApellido());
+                            if (fotoUrl != null && !fotoUrl.isBlank()) {
+                                nuevo.setFotoUrl(fotoUrl);
+                            }
+                            return actorRepository.save(nuevo);
+                        });
+                // Actualizar foto si no la tenía
+                if (a.getFotoUrl() == null && fotoUrl != null && !fotoUrl.isBlank()) {
+                    a.setFotoUrl(fotoUrl);
+                    actorRepository.save(a);
+                }
+                listaActores.add(a);
+            }
+            pelicula.setActores(listaActores);
         } else if (dto.getActoresNombres() != null && !dto.getActoresNombres().isEmpty()) {
             List<Actor> listaActores = new ArrayList<>();
             for (String nombre : dto.getActoresNombres()) {

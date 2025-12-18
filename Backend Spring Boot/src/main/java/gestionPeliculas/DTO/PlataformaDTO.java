@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class PlataformaDTO {
     private Long id;
     private String nombre;
-    private String url;
+    private String url; // URL del logo
+    private int numeroPeliculas;
 }

@@ -23,17 +23,20 @@ public class ActorService {
     private ActorMapper mapper;
 
     // Listar todos los actores
+    @Transactional(readOnly = true)
     public List<ActorDTO> listar() {
         return actorRepository.findAll()
-            .stream()
-            .map(mapper::toDto)
-            .toList();
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
 
     // Buscar actor por id
+    @Transactional(readOnly = true)
     public ActorDTO buscarPorId(Long id) {
         Actor actor = actorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actor no encontrado con id: " + id));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actor no encontrado con id: " + id));
         return mapper.toDto(actor);
     }
 
@@ -49,7 +52,8 @@ public class ActorService {
     @Transactional
     public ActorDTO actualizar(Long id, ActorCreateUpdateDTO dto) {
         Actor actorExistente = actorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actor no encontrado con id: " + id));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actor no encontrado con id: " + id));
 
         mapper.updateEntity(dto, actorExistente);
         Actor actualizado = actorRepository.save(actorExistente);

@@ -1,18 +1,17 @@
 package gestionPeliculas.DTO;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO simple para recibir datos de actores desde TMDB
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActorCreateUpdateDTO {
-    @NotBlank(message = "El nombre del actor es obligatorio")
+public class ActorDataDTO {
     private String nombre;
-
     private String apellido;
-
     private String fotoUrl;
 }

@@ -88,10 +88,25 @@ export const getMovieDetails = async (tmdbId) => {
       ? `${IMAGE_BASE_URL}${director.profile_path}` 
       : '';
 
-    // Obtener los 5 primeros actores del cast
-    const actoresNombres = credits.cast
+    // Obtener los 5 primeros actores del cast con fotos
+    const actoresData = credits.cast
       .slice(0, 5)
-      .map(actor => actor.name);
+      .map(actor => {
+        const nameParts = actor.name.split(' ');
+        const nombre = nameParts[0];
+        const apellido = nameParts.slice(1).join(' ');
+        return {
+          nombre,
+          apellido,
+          nombreCompleto: actor.name,
+          fotoUrl: actor.profile_path 
+            ? `${IMAGE_BASE_URL}${actor.profile_path}` 
+            : ''
+        };
+      });
+    
+    // Para compatibilidad, también enviar solo nombres
+    const actoresNombres = actoresData.map(a => a.nombreCompleto);
 
     // Convertir géneros de TMDB a español
     const categoriasNombres = movie.genres.map(genre => 
@@ -113,6 +128,7 @@ export const getMovieDetails = async (tmdbId) => {
       directorNombre,
       directorFotoUrl,
       actoresNombres,
+      actoresData, // Nueva propiedad con fotos
       categoriasNombres,
       plataformasNombres: [] // Se generan automáticamente en el backend
     };
@@ -128,7 +144,7 @@ export default {
 };
 
 /**
- * Busca personas (directores/actores) en TMDB
+ * Busca personas (directores) en TMDB
  * @param {string} query - Nombre a buscar
  * @returns {Promise<Array>} Lista de personas encontradas
  */
@@ -164,6 +180,47 @@ export const searchPeople = async (query) => {
       });
   } catch (error) {
     console.error('Error buscando personas en TMDB:', error);
+    throw error;
+  }
+};
+
+/**
+ * Busca actores en TMDB
+ * @param {string} query - Nombre a buscar
+ * @returns {Promise<Array>} Lista de actores encontrados
+ */
+export const searchActors = async (query) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/search/person`, {
+      params: {
+        api_key: API_KEY,
+        query,
+        language: 'es-ES',
+        include_adult: false
+      }
+    });
+
+    return response.data.results
+      .filter(person => person.known_for_department === 'Acting')
+      .slice(0, 10)
+      .map(person => {
+        const nameParts = person.name.split(' ');
+        const nombre = nameParts[0];
+        const apellido = nameParts.slice(1).join(' ');
+        
+        return {
+          id: person.id,
+          nombre,
+          apellido,
+          nombreCompleto: person.name,
+          fotoUrl: person.profile_path 
+            ? `${IMAGE_BASE_URL}${person.profile_path}` 
+            : null,
+          department: person.known_for_department
+        };
+      });
+  } catch (error) {
+    console.error('Error buscando actores en TMDB:', error);
     throw error;
   }
 };

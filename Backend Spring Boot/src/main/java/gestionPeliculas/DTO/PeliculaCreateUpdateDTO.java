@@ -43,6 +43,7 @@ public class PeliculaCreateUpdateDTO {
     private String directorNombre;
     private String directorFotoUrl;
     private List<String> actoresNombres;
+    private List<ActorDataDTO> actoresData; // Actores con foto desde TMDB
     private List<String> categoriasNombres;
     private List<String> idiomasNombres;
     private List<String> plataformasNombres;
