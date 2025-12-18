@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import AdminPeliculasPage from './pages/AdminPeliculasPage';
 import CarteleraPage from './pages/CarteleraPage';
 import FavoritosPage from './pages/FavoritosPage';
+import CarteleraCinePage from './pages/CarteleraCinePage';
 import './App.css';
 
 function App() {
@@ -20,6 +21,9 @@ function App() {
 
         {/* Favoritos */}
         <Route path="/favoritos" element={<FavoritosPage />} />
+
+        {/* Cartelera del Cine (Funciones) */}
+        <Route path="/cartelera-cine" element={<CarteleraCinePage />} />
 
         {/* Redirigir a login por defecto */}
         <Route path="*" element={<Navigate to="/login" replace />} />

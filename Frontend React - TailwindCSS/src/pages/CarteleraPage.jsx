@@ -203,7 +203,7 @@ const CarteleraPage = () => {
                                 Mis Películas Favoritas
                             </button>
                             <span className="text-gray-700 text-xl font-thin mx-2">|</span>
-                            <button className="nav-btn-highlight">
+                            <button className="nav-btn-highlight" onClick={() => navigate('/cartelera-cine')}>
                                 Nuestra Cartelera del Cine!
                             </button>
                         </div>
