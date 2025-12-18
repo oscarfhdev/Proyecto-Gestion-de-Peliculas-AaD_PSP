@@ -1,6 +1,5 @@
 package gestionPeliculas.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,5 +24,9 @@ public class Usuario {
     private String password;
 
     private boolean admin;
+
+    @ManyToMany
+    @JoinTable(name = "usuario_favoritos", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "pelicula_id"))
+    private List<Pelicula> favoritos = new ArrayList<>();
 
 }

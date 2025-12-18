@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage';
 import AdminPeliculasPage from './pages/AdminPeliculasPage';
 import CarteleraPage from './pages/CarteleraPage';
+import FavoritosPage from './pages/FavoritosPage';
 import './App.css';
 
 function App() {
@@ -16,6 +17,9 @@ function App() {
 
         {/* Cartelera (Vista Cliente) */}
         <Route path="/cartelera" element={<CarteleraPage />} />
+
+        {/* Favoritos */}
+        <Route path="/favoritos" element={<FavoritosPage />} />
 
         {/* Redirigir a login por defecto */}
         <Route path="*" element={<Navigate to="/login" replace />} />

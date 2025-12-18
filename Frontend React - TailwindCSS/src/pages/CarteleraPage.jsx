@@ -25,10 +25,13 @@ import {
     InfoCircleOutlined,
     DesktopOutlined,
     GlobalOutlined,
-    VideoCameraOutlined
+    VideoCameraOutlined,
+    HeartFilled,
+    HeartOutlined
 } from '@ant-design/icons';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import MovieDetailModal from '../components/MovieDetailModal';
 import logo from '../assets/logo.png';
 
 const API_URL = 'http://localhost:8081/api';
@@ -43,8 +46,7 @@ const CarteleraPage = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPelicula, setSelectedPelicula] = useState(null);
     const [user, setUser] = useState(null);
-    const [criticas, setCriticas] = useState([]);
-    const [funcionesCine, setFuncionesCine] = useState([]);
+    const [favoritos, setFavoritos] = useState([]);
     const [modal, modalContextHolder] = Modal.useModal();
 
     // Tema oscuro Netflix
@@ -58,15 +60,17 @@ const CarteleraPage = () => {
         },
     };
 
-    // Verificar autenticación
+    // Verificar autenticación y cargar datos iniciales
     useEffect(() => {
         const userJson = localStorage.getItem('user');
         if (!userJson) {
             navigate('/login');
             return;
         }
-        setUser(JSON.parse(userJson));
+        const currentUser = JSON.parse(userJson);
+        setUser(currentUser);
         cargarPeliculas();
+        cargarFavoritos(currentUser.id);
     }, [navigate]);
 
     // Rotación automática del Hero
@@ -99,38 +103,40 @@ const CarteleraPage = () => {
         }
     };
 
-    // Cargar críticas al abrir detalle
-    useEffect(() => {
-        if (selectedPelicula) {
-            // Cargar críticas
-            const fetchCriticas = async () => {
-                try {
-                    const response = await axios.get(`${API_URL}/criticas`);
-                    const filtered = response.data.filter(c => c.peliculaTitulo === selectedPelicula.titulo);
-                    setCriticas(filtered);
-                } catch (error) {
-                    console.error("Error cargando críticas", error);
-                    setCriticas([]);
-                }
-            };
-            // Cargar funciones de cine
-            const fetchFunciones = async () => {
-                try {
-                    const response = await axios.get(`${API_URL}/funciones`);
-                    const filtered = response.data.filter(f => f.pelicula?.titulo === selectedPelicula.titulo);
-                    setFuncionesCine(filtered);
-                } catch (error) {
-                    console.error("Error cargando funciones", error);
-                    setFuncionesCine([]);
-                }
-            };
-            fetchCriticas();
-            fetchFunciones();
-        } else {
-            setCriticas([]);
-            setFuncionesCine([]);
+    // Cargar favoritos del usuario
+    const cargarFavoritos = async (usuarioId) => {
+        try {
+            const response = await axios.get(`${API_URL}/usuarios/${usuarioId}/favoritos`);
+            setFavoritos(response.data);
+        } catch (error) {
+            console.error('Error cargando favoritos', error);
         }
-    }, [selectedPelicula]);
+    };
+
+    // Comprobar si una película es favorita
+    const isFavorito = (peliculaId) => {
+        return favoritos.some(fav => fav.id === peliculaId);
+    };
+
+    // Añadir o quitar de favoritos
+    const toggleFavorito = async (pelicula) => {
+        if (!user) return;
+        try {
+            if (isFavorito(pelicula.id)) {
+                await axios.delete(`${API_URL}/usuarios/${user.id}/favoritos/${pelicula.id}`);
+                setFavoritos(prev => prev.filter(f => f.id !== pelicula.id));
+                message.success('Eliminada de favoritos');
+            } else {
+                await axios.post(`${API_URL}/usuarios/${user.id}/favoritos/${pelicula.id}`);
+                setFavoritos(prev => [...prev, pelicula]);
+                message.success('Añadida a favoritos');
+            }
+        } catch (error) {
+            message.error('Error al gestionar favoritos');
+        }
+    };
+
+
 
     // Abrir modal de detalles
     const handleVerDetalles = (pelicula) => {
@@ -193,12 +199,12 @@ const CarteleraPage = () => {
                                 Mejores Películas
                             </button>
                             <span className="text-gray-700 text-xl font-thin mx-2">|</span>
-                            <button className="nav-btn">
+                            <button className="nav-btn" onClick={() => navigate('/favoritos')}>
                                 Mis Películas Favoritas
                             </button>
                             <span className="text-gray-700 text-xl font-thin mx-2">|</span>
                             <button className="nav-btn-highlight">
-                                Nuestra Cartelera
+                                Nuestra Cartelera del Cine!
                             </button>
                         </div>
                     </div>
@@ -298,6 +304,8 @@ const CarteleraPage = () => {
                             movies={destacadas}
                             icon={<StarFilled className="text-yellow-500" />}
                             onMovieClick={handleVerDetalles}
+                            isFavorito={isFavorito}
+                            toggleFavorito={toggleFavorito}
                         />
                     )}
 
@@ -309,6 +317,8 @@ const CarteleraPage = () => {
                                 title={categoria}
                                 movies={movies}
                                 onMovieClick={handleVerDetalles}
+                                isFavorito={isFavorito}
+                                toggleFavorito={toggleFavorito}
                             />
                         ))}
                     </div>
@@ -320,156 +330,14 @@ const CarteleraPage = () => {
                 </div>
 
                 {/* ========== MODAL DE DETALLES ========== */}
-                <Modal
-                    open={modalVisible}
+                {/* ========== MODAL DE DETALLES ========== */}
+                <MovieDetailModal
+                    visible={modalVisible}
                     onCancel={() => setModalVisible(false)}
-                    footer={null}
-                    width={950}
-                    centered
-                    destroyOnHidden
-                    closeIcon={<span className="text-white bg-black/50 rounded-full p-2 hover:bg-white/20 transition-colors">✕</span>}
-                    styles={{
-                        content: { padding: 0, backgroundColor: '#181818', borderRadius: 12, overflow: 'hidden', border: '1px solid #333' },
-                        body: { padding: 0 },
-                        mask: { backdropFilter: 'blur(5px)' }
-                    }}
-                >
-                    {selectedPelicula && (
-                        <div className="flex flex-col md:flex-row h-[600px]">
-                            {/* Póster */}
-                            <div className="w-full md:w-[40%] h-full relative">
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#181818] z-10" />
-                                <img
-                                    src={selectedPelicula.posterUrl || 'https://via.placeholder.com/300x450?text=Sin+Imagen'}
-                                    alt={selectedPelicula.titulo}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-
-                            {/* Información Columna Derecha */}
-                            <div className="flex-1 p-8 flex flex-col h-full overflow-y-auto custom-scrollbar relative z-20 -ml-12 md:ml-0">
-                                <div className="mb-4">
-                                    <h1 className="text-4xl font-black text-white mb-2 tracking-tight">
-                                        {selectedPelicula.titulo}
-                                    </h1>
-                                    <div className="flex items-center gap-3 text-gray-400 text-sm font-medium">
-                                        <span className="px-2 py-0.5 border border-gray-600 rounded text-xs">{selectedPelicula.clasificacion || '16+'}</span>
-                                        <span>{dayjs(selectedPelicula.fechaEstreno).format('YYYY')}</span>
-                                        <span>{Math.floor(selectedPelicula.duracion / 60)}h {selectedPelicula.duracion % 60}m</span>
-                                    </div>
-                                </div>
-
-                                {/* Valoración Estrellas */}
-                                <div className="flex items-center gap-3 mb-6">
-                                    <Rate allowHalf disabled value={selectedPelicula.valoracion || 0} style={{ color: '#E50914' }} />
-                                    <span className="text-white font-bold text-lg">{selectedPelicula.valoracion ? selectedPelicula.valoracion.toFixed(1) : '0'}</span>
-                                    <span className="text-gray-500 text-sm ml-1">/ 5</span>
-                                </div>
-
-                                {/* Botones Acción */}
-                                <div className="flex gap-3 mb-8">
-                                    <Button
-                                        block
-                                        type="default"
-                                        icon={<PlusOutlined />}
-                                        size="large"
-                                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 hover:text-white font-semibold h-12"
-                                    >
-                                        Añadir a mi lista
-                                    </Button>
-                                </div>
-
-                                {/* Sinopsis */}
-                                <div className="mb-8">
-                                    <h3 className="text-white font-bold mb-2">Sinopsis</h3>
-                                    <p className="text-gray-300 leading-relaxed text-sm">
-                                        {selectedPelicula.sinopsis}
-                                    </p>
-                                </div>
-
-                                {/* Info Extra: Idiomas y Plataformas */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                    <div>
-                                        <h4 className="text-gray-500 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider"><GlobalOutlined /> Audio Disponibles</h4>
-                                        <div className="flex flex-wrap gap-2">
-                                            {selectedPelicula.idiomas && selectedPelicula.idiomas.length > 0 ? (
-                                                selectedPelicula.idiomas.map(idioma => (
-                                                    <Tag key={idioma.id} bordered={false} className="bg-zinc-800 text-gray-300 m-0 px-3 py-1">{idioma.nombre}</Tag>
-                                                ))
-                                            ) : (
-                                                <span className="text-gray-500 text-sm italic">No especificado</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h4 className="text-gray-500 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider"><VideoCameraOutlined /> Dónde ver</h4>
-                                        <div className="flex flex-wrap gap-3 items-center">
-                                            {/* Plataformas desde la BBDD */}
-                                            {selectedPelicula.plataformas && selectedPelicula.plataformas.length > 0 ? (
-                                                selectedPelicula.plataformas.map(plataforma => (
-                                                    <div key={plataforma.id} className="bg-white rounded h-10 w-10 flex items-center justify-center p-1 overflow-hidden shadow-md" title={plataforma.nombre}>
-                                                        {plataforma.url ? (
-                                                            <img src={plataforma.url} alt={plataforma.nombre} className="w-full h-full object-contain" />
-                                                        ) : (
-                                                            <span className="text-[8px] text-gray-800 font-bold text-center leading-tight">{plataforma.nombre}</span>
-                                                        )}
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <span className="text-gray-500 text-sm italic">No disponible en streaming</span>
-                                            )}
-                                            {/* Indicador dinámico de Cines */}
-                                            {funcionesCine.length > 0 && (
-                                                <div className="h-8 flex items-center gap-1.5 px-3 bg-gradient-to-r from-red-600 to-red-700 rounded-full shadow-md animate-pulse">
-                                                    <span className="text-lg">🎬</span>
-                                                    <span className="text-xs text-white font-bold">¡En Cartelera!</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        {funcionesCine.length > 0 && (
-                                            <a href="#" className="text-xs text-red-400 hover:underline mt-2 inline-block">Ver horarios y salas →</a>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <Divider className="bg-zinc-800 my-6 border-zinc-800" />
-
-                                {/* Valoraciones de usuarios */}
-                                <div>
-                                    <h3 className="text-white font-bold mb-4">Valoraciones de la comunidad</h3>
-                                    {criticas.length > 0 ? (
-                                        <div className="space-y-4">
-                                            {criticas.map((critica) => (
-                                                <div key={critica.id} className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800/50">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <div className="flex items-center gap-2">
-                                                            <Avatar icon={<UserOutlined />} size="small" style={{ backgroundColor: '#87d068' }} />
-                                                            <span className="text-gray-300 font-bold text-sm">{critica.autor || 'Anónimo'}</span>
-                                                        </div>
-                                                        <Rate disabled value={critica.nota ? critica.nota / 2 : 0} style={{ fontSize: 12, color: '#E50914' }} />
-                                                    </div>
-                                                    <p className="text-gray-400 text-xs leading-relaxed">"{critica.comentario}"</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="text-gray-500 text-sm italic">No hay reseñas todavía.</p>
-                                    )}
-                                </div>
-
-                                {/* Créditos footer */}
-                                <div className="mt-8 pt-6 border-t border-zinc-800/50 text-xs text-gray-600">
-                                    <p className="mb-1">
-                                        <span className="font-bold text-gray-500">Dirección:</span> {selectedPelicula.director?.nombreCompleto || `${selectedPelicula.director?.nombre} ${selectedPelicula.director?.apellido}`}
-                                    </p>
-                                    <p>
-                                        <span className="font-bold text-gray-500">Reparto:</span> {selectedPelicula.actores?.map(a => a.nombreCompleto || a.nombre).slice(0, 5).join(', ')}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </Modal>
+                    pelicula={selectedPelicula}
+                    isFavorito={isFavorito}
+                    toggleFavorito={toggleFavorito}
+                />
 
                 {/* ========== ESTILOS GLOBALES COMPONENTE ========== */}
                 <style>{`
@@ -545,7 +413,7 @@ const CarteleraPage = () => {
 };
 
 // Componente Interno para Carrusel (MovieRow)
-const MovieRow = ({ title, movies, onMovieClick, icon }) => {
+const MovieRow = ({ title, movies, onMovieClick, icon, isFavorito, toggleFavorito }) => {
     const rowRef = useRef(null);
     const isDown = useRef(false);
     const startX = useRef(0);
@@ -656,16 +524,19 @@ const MovieRow = ({ title, movies, onMovieClick, icon }) => {
                                     </Button>
                                     <Button
                                         size="small"
-                                        icon={<PlusOutlined />}
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="w-full font-medium border-none shadow-sm flex items-center justify-center transition-all duration-300 hover:!bg-white hover:!text-black hover:scale-105"
+                                        icon={isFavorito && isFavorito(pelicula.id) ? <HeartFilled /> : <HeartOutlined />}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleFavorito && toggleFavorito(pelicula);
+                                        }}
+                                        className={`w-full font-medium border-none shadow-sm flex items-center justify-center transition-all duration-300 hover:scale-105 ${isFavorito && isFavorito(pelicula.id) ? 'hover:!bg-red-700' : 'hover:!bg-white hover:!text-black'}`}
                                         style={{
-                                            backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                                            color: '#333',
+                                            backgroundColor: isFavorito && isFavorito(pelicula.id) ? '#E50914' : 'rgba(255, 255, 255, 0.75)',
+                                            color: isFavorito && isFavorito(pelicula.id) ? 'white' : '#333',
                                             height: '32px'
                                         }}
                                     >
-                                        Añadir a Favoritos
+                                        {isFavorito && isFavorito(pelicula.id) ? 'Quitar Fav.' : 'Añadir Fav.'}
                                     </Button>
                                 </div>
                             </div>

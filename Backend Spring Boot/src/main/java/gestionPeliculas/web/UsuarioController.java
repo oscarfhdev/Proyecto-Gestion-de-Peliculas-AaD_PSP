@@ -1,6 +1,7 @@
 package gestionPeliculas.web;
 
 import gestionPeliculas.DTO.LoginDTO;
+import gestionPeliculas.DTO.PeliculaDTO;
 import gestionPeliculas.DTO.UsuarioCreateUpdateDTO;
 import gestionPeliculas.DTO.UsuarioDTO;
 import gestionPeliculas.service.UsuarioService;
@@ -48,5 +49,24 @@ public class UsuarioController {
     @PostMapping("/login")
     public UsuarioDTO login(@Valid @RequestBody LoginDTO loginDTO) {
         return service.login(loginDTO.getUsername(), loginDTO.getPassword());
+    }
+
+    // ========== FAVORITOS ==========
+
+    @GetMapping("/{id}/favoritos")
+    public List<PeliculaDTO> listarFavoritos(@PathVariable Long id) {
+        return service.listarFavoritos(id);
+    }
+
+    @PostMapping("/{id}/favoritos/{peliculaId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void agregarFavorito(@PathVariable Long id, @PathVariable Long peliculaId) {
+        service.agregarFavorito(id, peliculaId);
+    }
+
+    @DeleteMapping("/{id}/favoritos/{peliculaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarFavorito(@PathVariable Long id, @PathVariable Long peliculaId) {
+        service.eliminarFavorito(id, peliculaId);
     }
 }
