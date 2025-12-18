@@ -137,42 +137,92 @@ public class PeliculaService {
 
 
     private void asignarRelaciones(Pelicula pelicula, PeliculaCreateUpdateDTO dto) {
-        // Director (1 a N) - Es un solo ID
+        // --- DIRECTOR (Prioridad ID -> Nombre -> Crear Nuevo) ---
         if (dto.getDirectorId() != null) {
-            Director director = directorRepository.findById(dto.getDirectorId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Director no encontrado con id: " + dto.getDirectorId()));
-            pelicula.setDirector(director);
+            Director d = directorRepository.findById(dto.getDirectorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Director ID no encontrado"));
+            pelicula.setDirector(d);
+        } else if (dto.getDirectorNombre() != null && !dto.getDirectorNombre().isBlank()) {
+            Director d = directorRepository.findByNombre(dto.getDirectorNombre())
+                    .orElseGet(() -> {
+                        Director nuevo = new Director();
+                        nuevo.setNombre(dto.getDirectorNombre());
+                        return directorRepository.save(nuevo);
+                    });
+            pelicula.setDirector(d);
         }
 
-        // Actores (N a M) - Es una lista de IDs
+        // --- ACTORES ---
         if (dto.getActorIds() != null && !dto.getActorIds().isEmpty()) {
-            List<Actor> actores = actorRepository.findAllById(dto.getActorIds());
-            pelicula.setActores(actores); // Reemplaza la lista actual con la nueva
+            pelicula.setActores(actorRepository.findAllById(dto.getActorIds()));
+        } else if (dto.getActoresNombres() != null && !dto.getActoresNombres().isEmpty()) {
+            List<Actor> listaActores = new ArrayList<>();
+            for (String nombre : dto.getActoresNombres()) {
+                Actor a = actorRepository.findByNombre(nombre)
+                        .orElseGet(() -> {
+                            Actor nuevo = new Actor();
+                            nuevo.setNombre(nombre);
+                            return actorRepository.save(nuevo);
+                        });
+                listaActores.add(a);
+            }
+            pelicula.setActores(listaActores);
         }
 
-        // Categorías
+        // --- CATEGORÍAS ---
         if (dto.getCategoriaIds() != null && !dto.getCategoriaIds().isEmpty()) {
-            List<Categoria> categorias = categoriaRepository.findAllById(dto.getCategoriaIds());
-            pelicula.setCategorias(categorias);
+            pelicula.setCategorias(categoriaRepository.findAllById(dto.getCategoriaIds()));
+        } else if (dto.getCategoriasNombres() != null && !dto.getCategoriasNombres().isEmpty()) {
+            List<Categoria> lista = new ArrayList<>();
+            for (String nombre : dto.getCategoriasNombres()) {
+                Categoria c = categoriaRepository.findByNombre(nombre)
+                        .orElseGet(() -> {
+                            Categoria nueva = new Categoria();
+                            nueva.setNombre(nombre);
+                            return categoriaRepository.save(nueva);
+                        });
+                lista.add(c);
+            }
+            pelicula.setCategorias(lista);
         }
 
-        // Idiomas
+        // --- IDIOMAS ---
         if (dto.getIdiomaIds() != null && !dto.getIdiomaIds().isEmpty()) {
-            List<Idioma> idiomas = idiomaRepository.findAllById(dto.getIdiomaIds());
-            pelicula.setIdiomas(idiomas);
+            pelicula.setIdiomas(idiomaRepository.findAllById(dto.getIdiomaIds()));
+        } else if (dto.getIdiomasNombres() != null && !dto.getIdiomasNombres().isEmpty()) {
+            List<Idioma> lista = new ArrayList<>();
+            for (String nombre : dto.getIdiomasNombres()) {
+                Idioma i = idiomaRepository.findByNombre(nombre)
+                        .orElseGet(() -> {
+                            Idioma nuevo = new Idioma();
+                            nuevo.setNombre(nombre);
+                            return idiomaRepository.save(nuevo);
+                        });
+                lista.add(i);
+            }
+            pelicula.setIdiomas(lista);
         }
 
-        // Plataformas
+        // --- PLATAFORMAS ---
         if (dto.getPlataformaIds() != null && !dto.getPlataformaIds().isEmpty()) {
-            List<Plataforma> plataformas = plataformaRepository.findAllById(dto.getPlataformaIds());
-            pelicula.setPlataformas(plataformas);
+            pelicula.setPlataformas(plataformaRepository.findAllById(dto.getPlataformaIds()));
+        } else if (dto.getPlataformasNombres() != null && !dto.getPlataformasNombres().isEmpty()) {
+            List<Plataforma> lista = new ArrayList<>();
+            for (String nombre : dto.getPlataformasNombres()) {
+                Plataforma p = plataformaRepository.findByNombre(nombre)
+                        .orElseGet(() -> {
+                            Plataforma nueva = new Plataforma();
+                            nueva.setNombre(nombre);
+                            nueva.setUrl("https://www.google.com/search?q=" + nombre); // URL por defecto inteligente
+                            return plataformaRepository.save(nueva);
+                        });
+                lista.add(p);
+            }
+            pelicula.setPlataformas(lista);
         }
     }
 
-
-
-
-        // Tarea 1a
+    // Tarea 1a
     public String tareaLenta(String titulo) {
         try {
             System.out.println("Iniciando tarea para " + titulo + " en " + Thread.currentThread().getName());

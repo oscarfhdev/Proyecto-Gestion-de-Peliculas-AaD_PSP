@@ -39,4 +39,10 @@ public class PeliculaCreateUpdateDTO {
     private List<Long> categoriaIds;
     private List<Long> idiomaIds;
     private List<Long> plataformaIds;
+
+    private String directorNombre;
+    private List<String> actoresNombres;
+    private List<String> categoriasNombres;
+    private List<String> idiomasNombres;
+    private List<String> plataformasNombres;
 }
