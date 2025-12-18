@@ -16,5 +16,7 @@ public class FuncionDTO {
     private LocalTime hora;
     private Double precio;
     private String formato;
+    private PeliculaDTO pelicula;
+    private SalaDTO sala;
 
 }

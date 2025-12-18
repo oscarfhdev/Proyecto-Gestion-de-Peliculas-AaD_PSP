@@ -27,4 +27,10 @@ public class FuncionCreateUpdateDTO {
     @NotBlank(message = "El formato es obligatorio")
     private String formato;
 
+    @NotNull(message = "La película es obligatoria")
+    private Long peliculaId;
+
+    @NotNull(message = "La sala es obligatoria")
+    private Long salaId;
+
 }

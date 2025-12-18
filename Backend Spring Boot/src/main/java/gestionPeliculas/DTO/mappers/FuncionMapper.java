@@ -3,10 +3,17 @@ package gestionPeliculas.DTO.mappers;
 import gestionPeliculas.DTO.FuncionCreateUpdateDTO;
 import gestionPeliculas.DTO.FuncionDTO;
 import gestionPeliculas.domain.Funcion;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FuncionMapper {
+
+    @Autowired
+    private PeliculaMapper peliculaMapper;
+
+    @Autowired
+    private SalaMapper salaMapper;
 
     // ENTITY -> DTO
     public FuncionDTO toDto(Funcion funcion) {
@@ -16,7 +23,9 @@ public class FuncionMapper {
             funcion.getFecha(),
             funcion.getHora(),
             funcion.getPrecio(),
-            funcion.getFormato()
+            funcion.getFormato(),
+            peliculaMapper.toDto(funcion.getPelicula()),
+            salaMapper.toDto(funcion.getSala())
         );
     }
 

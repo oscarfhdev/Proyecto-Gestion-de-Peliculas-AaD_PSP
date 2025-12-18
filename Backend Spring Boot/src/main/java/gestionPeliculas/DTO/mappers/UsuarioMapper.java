@@ -13,7 +13,8 @@ public class UsuarioMapper {
         return new UsuarioDTO(
                 usuario.getId(),
                 usuario.getUsername(),
-                usuario.getEmail()
+                usuario.getEmail(),
+                usuario.isAdmin()
         );
     }
 
@@ -23,6 +24,7 @@ public class UsuarioMapper {
         usuario.setUsername(dto.getUsername());
         usuario.setEmail(dto.getEmail());
         usuario.setPassword(dto.getPassword());
+        usuario.setAdmin(dto.isAdmin());
         return usuario;
     }
 
@@ -31,5 +33,6 @@ public class UsuarioMapper {
         usuario.setUsername(dto.getUsername());
         usuario.setEmail(dto.getEmail());
         usuario.setPassword(dto.getPassword());
+        usuario.setAdmin(dto.isAdmin());
     }
 }

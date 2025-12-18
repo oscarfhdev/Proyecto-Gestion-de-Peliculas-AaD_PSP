@@ -14,6 +14,6 @@ public class CriticaDTO {
     private String comentario;
     private Double nota;
     private LocalDate fecha;
-//    private Long peliculaId;
-//    private Long usuarioId;
+    private String peliculaTitulo;
+    private String autor;
 }

@@ -22,11 +22,11 @@ public class Critica {
 
     private LocalDate fecha;
 
+    private String autor;
+
     @ManyToOne
     @JoinColumn(name = "pelicula_id")
     private Pelicula pelicula;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+
 }

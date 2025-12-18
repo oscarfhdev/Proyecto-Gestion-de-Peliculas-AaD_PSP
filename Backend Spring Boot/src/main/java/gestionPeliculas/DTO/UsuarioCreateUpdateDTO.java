@@ -20,4 +20,6 @@ public class UsuarioCreateUpdateDTO {
 
     @NotBlank(message = "La contraseña es obligatoria")
     private String password;
+
+    private boolean admin;
 }

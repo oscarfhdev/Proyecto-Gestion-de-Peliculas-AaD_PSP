@@ -23,9 +23,9 @@ public class CriticaCreateUpdateDTO {
     @NotNull(message = "La fecha es obligatoria")
     private LocalDate fecha;
 
-//    @NotNull(message = "La película es obligatoria")
-//    private Long peliculaId;
-//
-//    @NotNull(message = "El usuario es obligatorio")
-//    private Long usuarioId;
+    @NotNull(message = "La película es obligatoria")
+    private Long peliculaId;
+
+    @NotBlank(message = "El nombre del autor es obligatorio")
+    private String autor;
 }

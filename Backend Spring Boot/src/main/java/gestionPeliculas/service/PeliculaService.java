@@ -48,10 +48,15 @@ public class PeliculaService {
     @Lazy
     private PeliculaService self;
 
+    @Autowired
     private DirectorRepository directorRepository;
+    @Autowired
     private ActorRepository actorRepository;
+    @Autowired
     private CategoriaRepository categoriaRepository;
+    @Autowired
     private IdiomaRepository idiomaRepository;
+    @Autowired
     private PlataformaRepository plataformaRepository;
 
     /*private final List<Pelicula> peliculas = new ArrayList<>();
@@ -69,6 +74,7 @@ public class PeliculaService {
 
     // En función de que queramos hacer podemos retornar el contenido de la base de datos o el contenido de la lista
     // Devuelve una lista de películas de tipo DTO
+    @Transactional(readOnly = true)
     public List<PeliculaDTO> listar() {
         return peliculaRepository.findAll()
                 .stream()
@@ -78,6 +84,7 @@ public class PeliculaService {
     }
 
     // Nos retorna la película si la encuentra, de lo contrario lanza código 404
+    @Transactional(readOnly = true)
     public PeliculaDTO buscarPorId(Long id) {
         Pelicula p = peliculaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Película no encontrada con id: " + id));
@@ -93,7 +100,12 @@ public class PeliculaService {
     @Transactional
     // Agrega la película, si no es posible se revierte (transacctional)
     public PeliculaDTO agregar(PeliculaCreateUpdateDTO peliculaCreateUpdateDTO) {
+        if (peliculaRepository.existsByTitulo(peliculaCreateUpdateDTO.getTitulo())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ya existe una película con ese título");
+        }
+
         Pelicula peliculaGuardar = mapper.toEntity(peliculaCreateUpdateDTO);
+        asignarRelaciones(peliculaGuardar, peliculaCreateUpdateDTO);
         peliculaGuardar = peliculaRepository.save(peliculaGuardar);
         return mapper.toDto(peliculaGuardar);
     }
@@ -106,6 +118,8 @@ public class PeliculaService {
 
         // mapper.updateEntity hace la reasignación de campos sobre la entidad existente
         mapper.updateEntity(peliculaCreateUpdateDTO, peliculaExistente);
+
+        asignarRelaciones(peliculaExistente, peliculaCreateUpdateDTO);
 
         Pelicula actualizada = peliculaRepository.save(peliculaExistente);
         return mapper.toDto(actualizada);

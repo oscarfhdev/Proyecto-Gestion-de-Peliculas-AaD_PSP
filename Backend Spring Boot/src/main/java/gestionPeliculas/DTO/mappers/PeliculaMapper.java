@@ -58,6 +58,7 @@ public class PeliculaMapper {
         pelicula.setFechaEstreno(dto.getFechaEstreno());
         pelicula.setSinopsis(dto.getSinopsis());
         pelicula.setValoracion(dto.getValoracion());
+        pelicula.setPosterUrl(dto.getPosterUrl());
         return pelicula;
     }
 
@@ -70,5 +71,6 @@ public class PeliculaMapper {
         pelicula.setFechaEstreno(dto.getFechaEstreno());
         pelicula.setSinopsis(dto.getSinopsis());
         pelicula.setValoracion(dto.getValoracion());
+        pelicula.setPosterUrl(dto.getPosterUrl());
     }
 }

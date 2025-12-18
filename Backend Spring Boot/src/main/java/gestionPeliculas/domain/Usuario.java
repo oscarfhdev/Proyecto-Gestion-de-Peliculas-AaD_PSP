@@ -24,7 +24,6 @@ public class Usuario {
 
     private String password;
 
-    @OneToMany(mappedBy = "usuario")
-    private List<Critica> criticas = new ArrayList<>();
+    private boolean admin;
 
 }
