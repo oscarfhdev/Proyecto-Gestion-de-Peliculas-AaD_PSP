@@ -114,7 +114,7 @@ const LoginPage = () => {
                             className="w-80 xl:w-96 h-auto object-contain drop-shadow-2xl mb-8"
                         />
                         <h1 className="text-white text-4xl xl:text-5xl font-bold text-center mb-4 drop-shadow-lg">
-                            Bienvenido a OFHCINEMA
+                            Bienvenido a OFH CINEMA
                         </h1>
                         <p className="text-gray-300 text-xl xl:text-2xl text-center max-w-lg">
                             Tu destino para las mejores películas y experiencias cinematográficas
