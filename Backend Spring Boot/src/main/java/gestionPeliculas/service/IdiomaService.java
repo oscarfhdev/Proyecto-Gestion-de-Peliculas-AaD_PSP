@@ -22,6 +22,7 @@ public class IdiomaService {
     @Autowired
     private IdiomaMapper mapper;
 
+    @Transactional(readOnly = true)
     public List<IdiomaDTO> listar() {
         return idiomaRepository.findAll()
                 .stream()
@@ -29,9 +30,11 @@ public class IdiomaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public IdiomaDTO buscarPorId(Long id) {
         Idioma idioma = idiomaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Idioma no encontrado con id: " + id));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Idioma no encontrado con id: " + id));
         return mapper.toDto(idioma);
     }
 
@@ -45,7 +48,8 @@ public class IdiomaService {
     @Transactional
     public IdiomaDTO actualizar(Long id, IdiomaCreateUpdateDTO dto) {
         Idioma idiomaExistente = idiomaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Idioma no encontrado con id: " + id));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Idioma no encontrado con id: " + id));
 
         mapper.updateEntity(dto, idiomaExistente);
         Idioma actualizado = idiomaRepository.save(idiomaExistente);

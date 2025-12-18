@@ -1,115 +1,116 @@
 package gestionPeliculas.config;
 
-import gestionPeliculas.domain.Actor;
-import gestionPeliculas.domain.Director;
-import gestionPeliculas.domain.Pelicula;
-import gestionPeliculas.repository.ActorRepository;
-import gestionPeliculas.repository.DirectorRepository;
-import gestionPeliculas.repository.PeliculaRepository;
+import gestionPeliculas.domain.Plataforma;
+import gestionPeliculas.domain.Usuario;
+import gestionPeliculas.repository.PlataformaRepository;
+import gestionPeliculas.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-
 @Configuration
 public class DataLoader {
-    /*
-    // Este código debe ejecutarse automáticamente justo DESPUÉS de que arranque toda la aplicación.
+
     @Bean
-    CommandLineRunner initData(ActorRepository actorRepo,
-                               DirectorRepository directorRepo,
-                               FichaTecnicaRepository fichaRepo,
-                               PeliculaRepository peliculaRepo) {
-
+    CommandLineRunner initData(UsuarioRepository usuarioRepo, PlataformaRepository plataformaRepo,
+            gestionPeliculas.repository.SalaRepository salaRepo) {
         return args -> {
-
+            System.out.println(">>> Verificando datos iniciales...");
 
             // =====================================================
-            // 🚨 PROTECCIÓN: solo cargar datos si NO hay directores
+            // USUARIOS
             // =====================================================
-            if (directorRepo.count() > 0) {
-                System.out.println(">>> Datos ya existentes. NO se carga DataLoader.");
-                return;
+
+            // Admin
+            if (usuarioRepo.findByUsername("admin") == null) {
+                Usuario admin = new Usuario();
+                admin.setUsername("admin");
+                admin.setEmail("admin@admin.com");
+                admin.setPassword("admin123");
+                admin.setAdmin(true);
+                usuarioRepo.save(admin);
+                System.out.println(">>> Usuario ADMIN creado");
+            } else {
+                System.out.println(">>> Usuario ADMIN ya existe");
             }
 
-            System.out.println(">>> CARGANDO DATOS DE PRUEBA...");
+            // Usuario normal
+            if (usuarioRepo.findByUsername("usuario") == null) {
+                Usuario usuario = new Usuario();
+                usuario.setUsername("usuario");
+                usuario.setEmail("usuario@usuario.com");
+                usuario.setPassword("usuario");
+                usuario.setAdmin(false);
+                usuarioRepo.save(usuario);
+                System.out.println(">>> Usuario NORMAL creado");
+            } else {
+                System.out.println(">>> Usuario NORMAL ya existe");
+            }
 
-            // ======================================
-            // DIRECTORES
-            // ======================================
-            Director nolan = new Director(null, "Christopher Nolan", new ArrayList<>());
-            Director docter = new Director(null, "Pete Docter", new ArrayList<>());
+            // =====================================================
+            // PLATAFORMAS
+            // =====================================================
 
-            directorRepo.save(nolan);
-            directorRepo.save(docter);
+            // Netflix
+            if (plataformaRepo.findByNombre("Netflix").isEmpty()) {
+                Plataforma netflix = new Plataforma();
+                netflix.setNombre("Netflix");
+                netflix.setUrl("https://image.tmdb.org/t/p/original/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg");
+                plataformaRepo.save(netflix);
+                System.out.println(">>> Plataforma NETFLIX creada");
+            }
 
-            // ======================================
-            // FICHAS TÉCNICAS
-            // ======================================
-            // OJO: tus fichas solo tienen (id, director, duracion, pais)
-            FichaTecnica f1 = new FichaTecnica(null, "Christopher Nolan", 169, "EE.UU.");
-            FichaTecnica f2 = new FichaTecnica(null, "Pete Docter", 100, "EE.UU.");
+            // Disney+
+            if (plataformaRepo.findByNombre("Disney+").isEmpty()) {
+                Plataforma disney = new Plataforma();
+                disney.setNombre("Disney+");
+                disney.setUrl("https://image.tmdb.org/t/p/original/7rwgEs15tFwyR9NPQ5vpzxTj19Q.jpg");
+                plataformaRepo.save(disney);
+                System.out.println(">>> Plataforma DISNEY+ creada");
+            }
 
-            fichaRepo.save(f1);
-            fichaRepo.save(f2);
+            // HBO Max
+            if (plataformaRepo.findByNombre("HBO Max").isEmpty()) {
+                Plataforma hbo = new Plataforma();
+                hbo.setNombre("HBO Max");
+                hbo.setUrl("https://image.tmdb.org/t/p/original/aS2zvJWn9mwiCOeaaCkIh4wleZS.jpg");
+                plataformaRepo.save(hbo);
+                System.out.println(">>> Plataforma HBO MAX creada");
+            }
 
-            // ======================================
-            // PELÍCULAS
-            // ======================================
-            Pelicula interstellar = new Pelicula(
-                    null,
-                    "Interstellar",
-                    169,
-                    LocalDate.of(2014, 11, 7),
-                    "Exploradores espaciales viajan a través de un agujero de gusano...",
-                    9,
-                    f1,
-                    nolan,
-                    new ArrayList<>()  // lista de actores VACÍA,
-            );
+            // Prime Video
+            if (plataformaRepo.findByNombre("Amazon Prime Video").isEmpty()) {
+                Plataforma prime = new Plataforma();
+                prime.setNombre("Prime Video");
+                prime.setUrl("https://image.tmdb.org/t/p/original/emthp39XA2YScoYL1p0sdbAH2WA.jpg");
+                plataformaRepo.save(prime);
+                System.out.println(">>> Plataforma PRIME VIDEO creada");
+            }
 
-            Pelicula soul = new Pelicula(
-                    null,
-                    "Soul",
-                    100,
-                    LocalDate.of(2020, 12, 25),
-                    "Un músico descubre el verdadero sentido de la vida...",
-                    8,
-                    f2,
-                    docter,
-                    new ArrayList<>()
-            );
+            // =====================================================
+            // SALAS
+            // =====================================================
+            if (salaRepo.count() == 0) {
+                gestionPeliculas.domain.Sala sala1 = new gestionPeliculas.domain.Sala();
+                sala1.setNumeroSala(1L);
+                sala1.setCapacidad(100L);
+                salaRepo.save(sala1);
 
-            peliculaRepo.save(interstellar);
-            peliculaRepo.save(soul);
+                gestionPeliculas.domain.Sala sala2 = new gestionPeliculas.domain.Sala();
+                sala2.setNumeroSala(2L);
+                sala2.setCapacidad(150L);
+                salaRepo.save(sala2);
 
-            // ======================================
-            // ACTORES
-            // ======================================
-            Actor matthew = new Actor(null, "Matthew McConaughey", new ArrayList<>());
-            Actor hathaway = new Actor(null, "Anne Hathaway", new ArrayList<>());
-            Actor foxx = new Actor(null, "Jamie Foxx", new ArrayList<>());
+                gestionPeliculas.domain.Sala sala3 = new gestionPeliculas.domain.Sala();
+                sala3.setNumeroSala(3L);
+                sala3.setCapacidad(200L);
+                salaRepo.save(sala3);
+                System.out.println(">>> 3 SALAS creadas por defecto");
+            } else {
+                System.out.println(">>> SALAS ya existentes");
+            }
 
-            actorRepo.save(matthew);
-            actorRepo.save(hathaway);
-            actorRepo.save(foxx);
-
-            // ======================================
-            // RELACIÓN MANY-TO-MANY
-            // (Usando tus métodos de sincronización)
-            // ======================================
-            matthew.addPelicula(interstellar);
-            hathaway.addPelicula(interstellar);
-            foxx.addPelicula(soul);
-
-            peliculaRepo.save(interstellar);
-            peliculaRepo.save(soul);
-
-            System.out.println(">>> DATOS DE PRUEBA INSERTADOS CORRECTAMENTE");
+            System.out.println(">>> Verificación de datos iniciales completada");
         };
     }
-
-     */
 }

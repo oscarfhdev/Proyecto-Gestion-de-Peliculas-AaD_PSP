@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -25,19 +27,22 @@ public class FuncionService {
     private final PeliculaRepository peliculaRepository;
     private final SalaRepository salaRepository;
 
+    @Transactional(readOnly = true)
     public List<FuncionDTO> listar() {
         return funcionRepository.findAll()
-            .stream()
-            .map(mapper::toDto)
-            .toList();
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     public FuncionDTO buscarPorId(Long id) {
         Funcion funcion = funcionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Función no encontrada"));
         return mapper.toDto(funcion);
     }
 
+    @Transactional
     public FuncionDTO agregar(FuncionCreateUpdateDTO dto) {
         Funcion funcion = mapper.toEntity(dto); // Convierte fecha/hora
 
@@ -54,6 +59,7 @@ public class FuncionService {
         return mapper.toDto(funcion);
     }
 
+    @Transactional
     public FuncionDTO actualizar(Long id, FuncionCreateUpdateDTO dto) {
         Funcion existente = funcionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Función no encontrada"));
