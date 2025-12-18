@@ -59,20 +59,29 @@ public class PeliculaService {
     @Autowired
     private PlataformaRepository plataformaRepository;
 
-    /*private final List<Pelicula> peliculas = new ArrayList<>();
+    @Autowired
+    private RandomDataGeneratorService randomDataGenerator;
 
-    public PeliculaService() {
-        peliculas.add(new Pelicula(1L, "Interstellar", 169, LocalDate.of(2014, 11, 7),
-                "Exploradores espaciales buscan un nuevo hogar para la humanidad.", 10, null, null, null));
-        peliculas.add(new Pelicula(2L, "The Dark Knight", 152, LocalDate.of(2008, 7, 18),
-                "Batman enfrenta al Joker en una lucha por el alma de Gotham.", 5, null, null, null));
-        peliculas.add(new Pelicula(3L, "Soul", 100, LocalDate.of(2020, 12, 25),
-                "Un músico descubre el sentido de la vida más allá de la muerte.", 8, null, null, null));
-    }
+    /*
+     * private final List<Pelicula> peliculas = new ArrayList<>();
+     * 
+     * public PeliculaService() {
+     * peliculas.add(new Pelicula(1L, "Interstellar", 169, LocalDate.of(2014, 11,
+     * 7),
+     * "Exploradores espaciales buscan un nuevo hogar para la humanidad.", 10, null,
+     * null, null));
+     * peliculas.add(new Pelicula(2L, "The Dark Knight", 152, LocalDate.of(2008, 7,
+     * 18),
+     * "Batman enfrenta al Joker en una lucha por el alma de Gotham.", 5, null,
+     * null, null));
+     * peliculas.add(new Pelicula(3L, "Soul", 100, LocalDate.of(2020, 12, 25),
+     * "Un músico descubre el sentido de la vida más allá de la muerte.", 8, null,
+     * null, null));
+     * }
      */
 
-
-    // En función de que queramos hacer podemos retornar el contenido de la base de datos o el contenido de la lista
+    // En función de que queramos hacer podemos retornar el contenido de la base de
+    // datos o el contenido de la lista
     // Devuelve una lista de películas de tipo DTO
     @Transactional(readOnly = true)
     public List<PeliculaDTO> listar() {
@@ -87,14 +96,16 @@ public class PeliculaService {
     @Transactional(readOnly = true)
     public PeliculaDTO buscarPorId(Long id) {
         Pelicula p = peliculaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Película no encontrada con id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Película no encontrada con id: " + id));
         return mapper.toDto(p);
         /*
-        * return peliculas.stream()                 // convierte la lista en un flujo de datos
-        .filter(p -> p.getId().equals(id)) // se queda solo con las películas cuyo id coincide
-        .findFirst()                       // toma la primera coincidencia (si existe)
-        .orElse(null);                     // devuelve esa película o null si no hay
-        * */
+         * return peliculas.stream() // convierte la lista en un flujo de datos
+         * .filter(p -> p.getId().equals(id)) // se queda solo con las películas cuyo id
+         * coincide
+         * .findFirst() // toma la primera coincidencia (si existe)
+         * .orElse(null); // devuelve esa película o null si no hay
+         */
     }
 
     @Transactional
@@ -106,15 +117,30 @@ public class PeliculaService {
 
         Pelicula peliculaGuardar = mapper.toEntity(peliculaCreateUpdateDTO);
         asignarRelaciones(peliculaGuardar, peliculaCreateUpdateDTO);
+
+        // Generar datos aleatorios si no se han proporcionado
+        if (peliculaGuardar.getPlataformas() == null || peliculaGuardar.getPlataformas().isEmpty()) {
+            peliculaGuardar.setPlataformas(randomDataGenerator.generarPlataformasAleatorias());
+        }
+        if (peliculaGuardar.getIdiomas() == null || peliculaGuardar.getIdiomas().isEmpty()) {
+            peliculaGuardar.setIdiomas(randomDataGenerator.generarIdiomasAleatorios());
+        }
+
         peliculaGuardar = peliculaRepository.save(peliculaGuardar);
+
+        // Generar críticas aleatorias después de guardar
+        randomDataGenerator.generarCriticasAleatorias(peliculaGuardar);
+
         return mapper.toDto(peliculaGuardar);
     }
 
     @Transactional
-    // Actualiza la película, si no es posible se revierte (transacctional). Si no la encuentra lanza 404
+    // Actualiza la película, si no es posible se revierte (transacctional). Si no
+    // la encuentra lanza 404
     public PeliculaDTO actualizar(Long id, PeliculaCreateUpdateDTO peliculaCreateUpdateDTO) {
         Pelicula peliculaExistente = peliculaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Película no encontrada con id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Película no encontrada con id: " + id));
 
         // mapper.updateEntity hace la reasignación de campos sobre la entidad existente
         mapper.updateEntity(peliculaCreateUpdateDTO, peliculaExistente);
@@ -126,7 +152,8 @@ public class PeliculaService {
     }
 
     @Transactional
-    // Elimina la película y no devuelve nada, si no la encuentra lanza código de error 404
+    // Elimina la película y no devuelve nada, si no la encuentra lanza código de
+    // error 404
     public void eliminar(Long id) {
         boolean existe = peliculaRepository.existsById(id);
         if (!existe) {
@@ -134,7 +161,6 @@ public class PeliculaService {
         }
         peliculaRepository.deleteById(id);
     }
-
 
     private void asignarRelaciones(Pelicula pelicula, PeliculaCreateUpdateDTO dto) {
         // --- DIRECTOR (Prioridad ID -> Nombre -> Crear Nuevo) ---
@@ -255,7 +281,7 @@ public class PeliculaService {
         try {
             System.out.println("Iniciando " + titulo + " en " + Thread.currentThread().getName());
             // Con esto reproducimos durante un periodo aleatorio 1-5 segundos
-            int milisegundosAleatorios = (new Random().nextInt(5)+1) * 1000;
+            int milisegundosAleatorios = (new Random().nextInt(5) + 1) * 1000;
             Thread.sleep(milisegundosAleatorios);
 
             System.out.println("Terminando película " + titulo);
@@ -267,15 +293,17 @@ public class PeliculaService {
         System.out.println("Procesada la película: " + titulo + " en " + tiempoTotalReproduccion + " milisegundos");
 
         // Retornamos la tarea cuando se completa
-        return CompletableFuture.completedFuture("Procesada la película: " + titulo + " en " + tiempoTotalReproduccion + " milisegundos");
+        return CompletableFuture.completedFuture(
+                "Procesada la película: " + titulo + " en " + tiempoTotalReproduccion + " milisegundos");
     }
 
     // Ejercicio mandado en clase para devolver las películas con mejor puntuación
-    public List<PeliculaDTO> devolverPeliculasPuntuacion(int puntuacionMinima){
+    public List<PeliculaDTO> devolverPeliculasPuntuacion(int puntuacionMinima) {
 
         List<PeliculaDTO> peliculasFiltradas = new ArrayList<>();
-        for(PeliculaDTO pelicula : this.listar()){
-            if (pelicula.getValoracion() >= puntuacionMinima) peliculasFiltradas.add(pelicula);
+        for (PeliculaDTO pelicula : this.listar()) {
+            if (pelicula.getValoracion() >= puntuacionMinima)
+                peliculasFiltradas.add(pelicula);
         }
         return peliculasFiltradas;
     }
@@ -368,7 +396,6 @@ public class PeliculaService {
         return CompletableFuture.completedFuture(null);
     }
 
-
     // Ejercicio 4, llamamos a votarComoJurado()
     public HashMap<String, Integer> simularVotacionesAleatorias(int numeroVotaciones) {
         long inicio = System.currentTimeMillis();
@@ -386,47 +413,59 @@ public class PeliculaService {
         // Instanciamos nuestro semáforo de solo 5 jurados votando simultáneamente
         Semaphore semaforo = new Semaphore(5);
 
-        // Creamos una lista de resultados futuros, void porque no devuelve ningún valo, solo esperamos a qué termine
+        // Creamos una lista de resultados futuros, void porque no devuelve ningún valo,
+        // solo esperamos a qué termine
         List<CompletableFuture<Void>> resultadosFuturos = new ArrayList<>();
 
-        // Aquí empezamos a lanzar los hilos, cada hilo es una votación aleatoria, lanzará tantos votos como los que hemos puesto en la URL
+        // Aquí empezamos a lanzar los hilos, cada hilo es una votación aleatoria,
+        // lanzará tantos votos como los que hemos puesto en la URL
         for (int i = 0; i < numeroVotaciones; i++) {
-            /* Aquí utilizamos self porque al llamar un método a otro que tiene @Async dentro de la misma clase no se activa el taskexecutor
-                por lo tanto hacemos como una trampa inyectando el propio sevicio(para ahorrar tiempo), lo correcto es poner este método con
-                la anotación en otra clase
+            /*
+             * Aquí utilizamos self porque al llamar un método a otro que tiene @Async
+             * dentro de la misma clase no se activa el taskexecutor
+             * por lo tanto hacemos como una trampa inyectando el propio sevicio(para
+             * ahorrar tiempo), lo correcto es poner este método con
+             * la anotación en otra clase
              */
             resultadosFuturos.add(this.self.votarComoJurado(registroVotos, peliculasCandidatas, semaforo));
         }
 
-        // Esperamos a que todos acaben, le pasamos la lista de resultados futuros como array[], el 0 en realidad se ajusta automáticametne al tamaño
+        // Esperamos a que todos acaben, le pasamos la lista de resultados futuros como
+        // array[], el 0 en realidad se ajusta automáticametne al tamaño
         CompletableFuture.allOf(resultadosFuturos.toArray(new CompletableFuture[0])).join();
 
         long tiempoTotalVotacion = System.currentTimeMillis() - inicio;
         // Imprimimos el resultado final:
         System.out.println("Votación realizada en: " + tiempoTotalVotacion + " milisegundos");
         System.out.println("---- RECUENTO FINAL ----");
-        /* Tras hacer las pruebas:
-            - 10 votaciones: 0ms
-            - 100 votaciones: 1ms
-            - 100 votaciones: 3ms
+        /*
+         * Tras hacer las pruebas:
+         * - 10 votaciones: 0ms
+         * - 100 votaciones: 1ms
+         * - 100 votaciones: 3ms
          */
 
-        // Ordenar por puntuación descendente, no modifica el registro de votos solo hace sout ordenado
+        // Ordenar por puntuación descendente, no modifica el registro de votos solo
+        // hace sout ordenado
         registroVotos.entrySet().stream()
-                // Aquí compara todos con todos, sorted espera 2 elementos para comparar y en función del resultado de la resta lo coloca antes o después
+                // Aquí compara todos con todos, sorted espera 2 elementos para comparar y en
+                // función del resultado de la resta lo coloca antes o después
                 // Utilizamos - para ordenar como ranking, si pusiéramos + iría de menor a mayor
                 .sorted((a, b) -> b.getValue() - a.getValue())
-                // Aquí hacemos un forEach, imprimimos de manera sencilla primero con la clave y luego con el valor
+                // Aquí hacemos un forEach, imprimimos de manera sencilla primero con la clave y
+                // luego con el valor
                 .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue() + " puntos"));
 
-        // Devolvemos el hashmap,se muestra desordenado en el navegador porque spring al serializar desordena
+        // Devolvemos el hashmap,se muestra desordenado en el navegador porque spring al
+        // serializar desordena
         return new HashMap<>(registroVotos);
     }
 
     @Async("taskExecutor")
     // Método que devuelve un completable future
     public CompletableFuture<Void> votarComoJurado(
-            ConcurrentHashMap<String, Integer> votos, // Le pasamos un mapa, pero es un tipo seguro para concurrencia, no un simple hashmap
+            ConcurrentHashMap<String, Integer> votos, // Le pasamos un mapa, pero es un tipo seguro para concurrencia,
+                                                      // no un simple hashmap
             List<PeliculaDTO> peliculas, // Le pasamos la lista de películas
             Semaphore semaforo) { // Le pasamos el semáforo
 
@@ -434,17 +473,20 @@ public class PeliculaService {
             // Solicitan el permiso al semáforo
             semaforo.acquire();
 
-            // Elegimos la película de manera aleatoria, generar un número dentro del rango del tamaño del array
+            // Elegimos la película de manera aleatoria, generar un número dentro del rango
+            // del tamaño del array
             PeliculaDTO peliculaRandom = peliculas.get(new Random().nextInt(peliculas.size()));
             String titulo = peliculaRandom.getTitulo();
 
             // Voto aleatorio 0–10
             int puntoAleatorios = new Random().nextInt(11);
 
-            /* Sumamos al mapa de forma segura
-                el título es la clave a actualizar
-                puntosAleatorios va a ser el valor en el caso de que la clave no exista
-                y el método de referencia dice que si ya hay valores se suman, ya que se tienen que combinar si los valores ya existen
+            /*
+             * Sumamos al mapa de forma segura
+             * el título es la clave a actualizar
+             * puntosAleatorios va a ser el valor en el caso de que la clave no exista
+             * y el método de referencia dice que si ya hay valores se suman, ya que se
+             * tienen que combinar si los valores ya existen
              */
             votos.merge(titulo, puntoAleatorios, Integer::sum); // El método de referencia es similar a (a, b) -> a + b
 
