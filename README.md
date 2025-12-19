@@ -1,7 +1,8 @@
 <div align="center">
 
-  <img src="Frontend React - TailwindCSS/src/assets/logo.png" alt="OFHCINEMA Logo" width="200" />
-  
+  <img src="Frontend React - TailwindCSS/src/assets/logo.png" alt="OFHCINEMA Logo" width="400" />
+
+ 
   **Plataforma de Gestión de Cine Full-Stack**
 
   [![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)](https://www.oracle.com/java/)
@@ -52,3 +53,73 @@ El sistema permite a los administradores gestionar el catálogo de películas co
 * **HTTP Client:** Axios.
 
 ---
+
+## 🚀 Instalación y Despliegue
+
+Sigue estos pasos para levantar el proyecto en tu entorno local.
+
+### 1️⃣ Prerrequisitos
+* Java JDK 17 o superior.
+* Node.js y npm.
+* Maven.
+
+### 2️⃣ Levantar el Backend (Puerto 8081)
+```bash
+cd Backend\ Spring\ Boot
+./mvnw spring-boot:run
+
+```
+
+*El backend iniciará el `DataLoader`, importando automáticamente datos.*
+
+### 3️⃣ Levantar el Frontend (Puerto 5173)
+
+```bash
+cd frontend-cine
+npm install
+npm run dev
+
+```
+
+---
+
+## 🔐 Credenciales de Prueba
+
+Para acceder a la aplicación puedes usar los siguientes usuarios pre-generados:
+
+| Rol | Usuario | Contraseña | Acceso |
+| --- | --- | --- | --- |
+| **Administrador** | `admin` | `123` | Gestión total (CRUD Películas) |
+| **Cliente** | `user` | `123` | Visualización y Favoritos |
+
+---
+
+## 📡 Estructura del Proyecto
+
+```text
+OFHCINEMA/
+├── Backend Spring Boot/      # Servidor API REST
+│   ├── src/main/java/        # Código fuente Java
+│   ├── src/main/resources/   # Configuración y CSVs de datos
+│   └── pom.xml               # Dependencias Maven
+│
+└── frontend-cine/            # Cliente React
+    ├── src/components/       # Componentes reutilizables
+    ├── src/pages/            # Vistas (Login, Admin, Cartelera)
+    ├── src/services/         # Conexión con Backend y TMDB
+    └── package.json          # Dependencias NPM
+
+```
+
+---
+
+<div align="center">
+<p>Desarrollado con ❤️ para la asignatura de AaD y PSP</p>
+<p>&copy; 2025 OFHCINEMA</p>
+</div>
+
+```
+
+
+
+```
