@@ -28,7 +28,7 @@ El sistema permite a los administradores gestionar el catálogo de películas co
 ### 🚀 Backend Inteligente (Spring Boot)
 * **Integración con API Externa (TMDB):** El sistema se conecta automáticamente con *The Movie Database* para importar datos, pósters y sinopsis.
 * **Gestión Inteligente de Entidades:** Al crear una película, el backend detecta si los Directores o Actores existen; si no, los crea dinámicamente.
-* **Carga de Datos Masiva (DataLoader):** Inicialización automática de la base de datos con películas reales (Oppenheimer, Avengers, etc.) basada en archivos CSV y relaciones complejas.
+* **Carga de Datos Simple al Iniciar):** Inicialización automática de la de datos.
 * **Generación de Datos Aleatoria:** Simulación de críticas, idiomas y plataformas para dar vida a la aplicación.
 
 ### 🎨 Frontend Inmersivo (React + Ant Design)
@@ -41,9 +41,9 @@ El sistema permite a los administradores gestionar el catálogo de películas co
 ## 🛠️ Tecnologías Utilizadas
 
 ### Backend
-* **Lenguaje:** Java 17+
+* **Lenguaje:** Java 21
 * **Framework:** Spring Boot (Web, Data JPA)
-* **Base de Datos:** H2 (En memoria para desarrollo) / MySQL compatible.
+* **Base de Datos:** MySQL .
 * **Herramientas:** Maven, Lombok.
 
 ### Frontend
@@ -89,8 +89,8 @@ Para acceder a la aplicación puedes usar los siguientes usuarios pre-generados:
 
 | Rol | Usuario | Contraseña | Acceso |
 | --- | --- | --- | --- |
-| **Administrador** | `admin` | `123` | Gestión total (CRUD Películas) |
-| **Cliente** | `user` | `123` | Visualización y Favoritos |
+| **Administrador** | `admin` | `admin123` | Gestión total (CRUD Películas) |
+| **Cliente** | `usuario` | `usuario` | Visualización y Favoritos |
 
 ---
 
@@ -103,7 +103,7 @@ OFHCINEMA/
 │   ├── src/main/resources/   # Configuración y CSVs de datos
 │   └── pom.xml               # Dependencias Maven
 │
-└── frontend-cine/            # Cliente React
+└── Frontend React - TailwindCSS//            # Cliente React
     ├── src/components/       # Componentes reutilizables
     ├── src/pages/            # Vistas (Login, Admin, Cartelera)
     ├── src/services/         # Conexión con Backend y TMDB
@@ -118,8 +118,3 @@ OFHCINEMA/
 <p>&copy; 2025 OFHCINEMA</p>
 </div>
 
-```
-
-
-
-```
