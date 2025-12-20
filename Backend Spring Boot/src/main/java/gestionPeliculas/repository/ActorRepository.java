@@ -8,4 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface ActorRepository extends JpaRepository<Actor, Long> {
-    Optional<Actor> findByNombre(String nombre);}
+    Optional<Actor> findByNombre(String nombre);
+
+    Optional<Actor> findByNombreAndApellido(String nombre, String apellido);
+}

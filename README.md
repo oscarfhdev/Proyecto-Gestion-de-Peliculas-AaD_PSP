@@ -54,12 +54,24 @@ El sistema permite a los administradores gestionar el catálogo de películas co
 
 ---
 
+## 📸 Capturas de Pantalla
+
+| Panel de Administración | Cartelera de Cliente |
+|:-----------------------:|:--------------------:|
+| ![Admin](screenshots/admin.png) | ![Cartelera](screenshots/cartelera.png) |
+
+| Login | Modal de Detalles |
+|:-----:|:-----------------:|
+| ![Login](screenshots/login.png) | ![Modal](screenshots/modal.png) |
+
+---
+
 ## 🚀 Instalación y Despliegue
 
 Sigue estos pasos para levantar el proyecto en tu entorno local.
 
 ### 1️⃣ Prerrequisitos
-* Java JDK 17 o superior.
+* Java JDK 21 o superior.
 * Node.js y npm.
 * Maven.
 

@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface DirectorRepository extends JpaRepository<Director, Long> {
     Optional<Director> findByNombre(String nombre);
+
+    Optional<Director> findByNombreAndApellido(String nombre, String apellido);
 }
