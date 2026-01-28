@@ -58,11 +58,11 @@ El sistema permite a los administradores gestionar el catálogo de películas co
 
 | Panel de Administración | Cartelera de Cliente |
 |:-----------------------:|:--------------------:|
-| ![Admin](screenshots/admin.png) | ![Cartelera](screenshots/cartelera.png) |
+| ![Admin](../screenshots/admin.png) | ![Cartelera](../screenshots/cartelera.png) |
 
 | Login | Modal de Detalles |
 |:-----:|:-----------------:|
-| ![Login](screenshots/login.png) | ![Modal](screenshots/modal.png) |
+| ![Login](../screenshots/login.png) | ![Modal](../screenshots/modal.png) |
 
 ---
 
