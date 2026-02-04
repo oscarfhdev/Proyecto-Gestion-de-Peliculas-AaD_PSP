@@ -25,8 +25,9 @@ public class Entrada {
     @Column(nullable = false)
     private Integer asiento;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String estado;
+    private EstadoEntrada estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venta_id", nullable = false)
@@ -36,7 +37,7 @@ public class Entrada {
     @JoinColumn(name = "funcion_id", nullable = false)
     private Funcion funcion;
 
-    public Entrada(String codigo, Integer fila, Integer asiento, String estado, Venta venta, Funcion funcion) {
+    public Entrada(String codigo, Integer fila, Integer asiento, EstadoEntrada estado, Venta venta, Funcion funcion) {
         this.codigo = codigo;
         this.fila = fila;
         this.asiento = asiento;

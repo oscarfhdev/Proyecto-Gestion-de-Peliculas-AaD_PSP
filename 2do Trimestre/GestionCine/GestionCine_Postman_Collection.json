@@ -26,9 +26,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/roles",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "roles"]
+							"path": [
+								"api",
+								"roles"
+							]
 						}
 					}
 				},
@@ -39,9 +44,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/roles",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "roles"]
+							"path": [
+								"api",
+								"roles"
+							]
 						}
 					}
 				},
@@ -52,9 +62,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/roles/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "roles", "1"]
+							"path": [
+								"api",
+								"roles",
+								"1"
+							]
 						}
 					}
 				},
@@ -75,9 +91,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/roles/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "roles", "1"]
+							"path": [
+								"api",
+								"roles",
+								"1"
+							]
 						}
 					}
 				},
@@ -88,9 +110,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/roles/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "roles", "1"]
+							"path": [
+								"api",
+								"roles",
+								"1"
+							]
 						}
 					}
 				}
@@ -116,9 +144,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/usuarios",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "usuarios"]
+							"path": [
+								"api",
+								"usuarios"
+							]
 						}
 					}
 				},
@@ -129,9 +162,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/usuarios",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "usuarios"]
+							"path": [
+								"api",
+								"usuarios"
+							]
 						}
 					}
 				},
@@ -142,9 +180,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/usuarios/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "usuarios", "1"]
+							"path": [
+								"api",
+								"usuarios",
+								"1"
+							]
 						}
 					}
 				},
@@ -155,9 +199,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/usuarios/email/admin@cine.com",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "usuarios", "email", "admin@cine.com"]
+							"path": [
+								"api",
+								"usuarios",
+								"email",
+								"admin@cine.com"
+							]
 						}
 					}
 				},
@@ -178,9 +229,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/usuarios/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "usuarios", "1"]
+							"path": [
+								"api",
+								"usuarios",
+								"1"
+							]
 						}
 					}
 				},
@@ -191,9 +248,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/usuarios/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "usuarios", "1"]
+							"path": [
+								"api",
+								"usuarios",
+								"1"
+							]
 						}
 					}
 				}
@@ -219,9 +282,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/directores",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "directores"]
+							"path": [
+								"api",
+								"directores"
+							]
 						}
 					}
 				},
@@ -232,9 +300,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/directores",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "directores"]
+							"path": [
+								"api",
+								"directores"
+							]
 						}
 					}
 				},
@@ -245,9 +318,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/directores/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "directores", "1"]
+							"path": [
+								"api",
+								"directores",
+								"1"
+							]
 						}
 					}
 				},
@@ -268,9 +347,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/directores/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "directores", "1"]
+							"path": [
+								"api",
+								"directores",
+								"1"
+							]
 						}
 					}
 				},
@@ -281,9 +366,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/directores/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "directores", "1"]
+							"path": [
+								"api",
+								"directores",
+								"1"
+							]
 						}
 					}
 				}
@@ -309,9 +400,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/actores",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "actores"]
+							"path": [
+								"api",
+								"actores"
+							]
 						}
 					}
 				},
@@ -322,9 +418,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/actores",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "actores"]
+							"path": [
+								"api",
+								"actores"
+							]
 						}
 					}
 				},
@@ -335,9 +436,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/actores/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "actores", "1"]
+							"path": [
+								"api",
+								"actores",
+								"1"
+							]
 						}
 					}
 				},
@@ -358,9 +465,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/actores/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "actores", "1"]
+							"path": [
+								"api",
+								"actores",
+								"1"
+							]
 						}
 					}
 				},
@@ -371,9 +484,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/actores/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "actores", "1"]
+							"path": [
+								"api",
+								"actores",
+								"1"
+							]
 						}
 					}
 				}
@@ -399,9 +518,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/peliculas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "peliculas"]
+							"path": [
+								"api",
+								"peliculas"
+							]
 						}
 					}
 				},
@@ -412,9 +536,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/peliculas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "peliculas"]
+							"path": [
+								"api",
+								"peliculas"
+							]
 						}
 					}
 				},
@@ -425,9 +554,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/peliculas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "peliculas", "1"]
+							"path": [
+								"api",
+								"peliculas",
+								"1"
+							]
 						}
 					}
 				},
@@ -438,9 +573,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/peliculas/director/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "peliculas", "director", "1"]
+							"path": [
+								"api",
+								"peliculas",
+								"director",
+								"1"
+							]
 						}
 					}
 				},
@@ -461,9 +603,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/peliculas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "peliculas", "1"]
+							"path": [
+								"api",
+								"peliculas",
+								"1"
+							]
 						}
 					}
 				},
@@ -474,9 +622,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/peliculas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "peliculas", "1"]
+							"path": [
+								"api",
+								"peliculas",
+								"1"
+							]
 						}
 					}
 				}
@@ -502,9 +656,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/salas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "salas"]
+							"path": [
+								"api",
+								"salas"
+							]
 						}
 					}
 				},
@@ -515,9 +674,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/salas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "salas"]
+							"path": [
+								"api",
+								"salas"
+							]
 						}
 					}
 				},
@@ -528,9 +692,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/salas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "salas", "1"]
+							"path": [
+								"api",
+								"salas",
+								"1"
+							]
 						}
 					}
 				},
@@ -551,9 +721,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/salas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "salas", "1"]
+							"path": [
+								"api",
+								"salas",
+								"1"
+							]
 						}
 					}
 				},
@@ -564,9 +740,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/salas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "salas", "1"]
+							"path": [
+								"api",
+								"salas",
+								"1"
+							]
 						}
 					}
 				}
@@ -592,9 +774,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/funciones",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "funciones"]
+							"path": [
+								"api",
+								"funciones"
+							]
 						}
 					}
 				},
@@ -605,9 +792,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/funciones",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "funciones"]
+							"path": [
+								"api",
+								"funciones"
+							]
 						}
 					}
 				},
@@ -618,9 +810,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/funciones/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "funciones", "1"]
+							"path": [
+								"api",
+								"funciones",
+								"1"
+							]
 						}
 					}
 				},
@@ -631,9 +829,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/funciones/sala/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "funciones", "sala", "1"]
+							"path": [
+								"api",
+								"funciones",
+								"sala",
+								"1"
+							]
 						}
 					}
 				},
@@ -644,9 +849,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/funciones/pelicula/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "funciones", "pelicula", "1"]
+							"path": [
+								"api",
+								"funciones",
+								"pelicula",
+								"1"
+							]
 						}
 					}
 				},
@@ -667,9 +879,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/funciones/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "funciones", "1"]
+							"path": [
+								"api",
+								"funciones",
+								"1"
+							]
 						}
 					}
 				},
@@ -680,9 +898,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/funciones/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "funciones", "1"]
+							"path": [
+								"api",
+								"funciones",
+								"1"
+							]
 						}
 					}
 				}
@@ -703,14 +927,19 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fecha\": \"2025-01-29T14:30:00\",\n    \"importeTotal\": 25.00,\n    \"metodoPago\": \"TARJETA\",\n    \"estado\": \"COMPLETADA\",\n    \"usuarioId\": 2\n}"
+							"raw": "{\n    \"fecha\": \"2025-01-29T14:30:00\",\n    \"importeTotal\": 25.00,\n    \"metodoPago\": \"TARJETA\",\n    \"estado\": \"COMPLETADA\",\n    \"usuarioId\": 2,\n    \"entradas\": [\n        { \"fila\": 5, \"asiento\": 10, \"funcionId\": 1 },\n        { \"fila\": 5, \"asiento\": 11, \"funcionId\": 1 }\n    ]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8081/api/ventas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "ventas"]
+							"path": [
+								"api",
+								"ventas"
+							]
 						}
 					}
 				},
@@ -721,9 +950,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/ventas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "ventas"]
+							"path": [
+								"api",
+								"ventas"
+							]
 						}
 					}
 				},
@@ -734,9 +968,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/ventas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "ventas", "1"]
+							"path": [
+								"api",
+								"ventas",
+								"1"
+							]
 						}
 					}
 				},
@@ -747,9 +987,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/ventas/usuario/2",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "ventas", "usuario", "2"]
+							"path": [
+								"api",
+								"ventas",
+								"usuario",
+								"2"
+							]
 						}
 					}
 				},
@@ -760,9 +1007,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/ventas/estado/COMPLETADA",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "ventas", "estado", "COMPLETADA"]
+							"path": [
+								"api",
+								"ventas",
+								"estado",
+								"COMPLETADA"
+							]
 						}
 					}
 				},
@@ -778,14 +1032,20 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fecha\": \"2025-01-29T14:30:00\",\n    \"importeTotal\": 30.00,\n    \"metodoPago\": \"EFECTIVO\",\n    \"estado\": \"COMPLETADA\",\n    \"usuarioId\": 2\n}"
+							"raw": "{\n    \"fecha\": \"2025-01-29T14:30:00\",\n    \"importeTotal\": 30.00,\n    \"metodoPago\": \"EFECTIVO\",\n    \"estado\": \"COMPLETADA\",\n    \"usuarioId\": 2,\n    \"entradas\": [\n        { \"fila\": 7, \"asiento\": 5, \"funcionId\": 2 }\n    ]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8081/api/ventas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "ventas", "1"]
+							"path": [
+								"api",
+								"ventas",
+								"1"
+							]
 						}
 					}
 				},
@@ -796,9 +1056,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/ventas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "ventas", "1"]
+							"path": [
+								"api",
+								"ventas",
+								"1"
+							]
 						}
 					}
 				}
@@ -819,14 +1085,19 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"codigo\": \"ENT-TEST1234\",\n    \"fila\": 5,\n    \"asiento\": 12,\n    \"estado\": \"ACTIVA\",\n    \"ventaId\": 1,\n    \"funcionId\": 1\n}"
+							"raw": "{\n    \"codigo\": \"ENT-TEST1234\",\n    \"fila\": 5,\n    \"asiento\": 12,\n    \"estado\": \"PAGADA\",\n    \"ventaId\": 1,\n    \"funcionId\": 1\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8081/api/entradas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas"]
+							"path": [
+								"api",
+								"entradas"
+							]
 						}
 					}
 				},
@@ -837,9 +1108,14 @@
 						"url": {
 							"raw": "http://localhost:8081/api/entradas",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas"]
+							"path": [
+								"api",
+								"entradas"
+							]
 						}
 					}
 				},
@@ -850,9 +1126,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/entradas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas", "1"]
+							"path": [
+								"api",
+								"entradas",
+								"1"
+							]
 						}
 					}
 				},
@@ -863,9 +1145,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/entradas/codigo/ENT-TEST1234",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas", "codigo", "ENT-TEST1234"]
+							"path": [
+								"api",
+								"entradas",
+								"codigo",
+								"ENT-TEST1234"
+							]
 						}
 					}
 				},
@@ -876,9 +1165,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/entradas/venta/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas", "venta", "1"]
+							"path": [
+								"api",
+								"entradas",
+								"venta",
+								"1"
+							]
 						}
 					}
 				},
@@ -889,9 +1185,16 @@
 						"url": {
 							"raw": "http://localhost:8081/api/entradas/funcion/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas", "funcion", "1"]
+							"path": [
+								"api",
+								"entradas",
+								"funcion",
+								"1"
+							]
 						}
 					}
 				},
@@ -912,9 +1215,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/entradas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas", "1"]
+							"path": [
+								"api",
+								"entradas",
+								"1"
+							]
 						}
 					}
 				},
@@ -925,9 +1234,15 @@
 						"url": {
 							"raw": "http://localhost:8081/api/entradas/1",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "8081",
-							"path": ["api", "entradas", "1"]
+							"path": [
+								"api",
+								"entradas",
+								"1"
+							]
 						}
 					}
 				}

@@ -1,5 +1,6 @@
 package com.ofhcinema.GestionCine.dto.response;
 
+import com.ofhcinema.GestionCine.domain.EstadoEntrada;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ public class EntradaResponseDTO {
     private String codigo;
     private Integer fila;
     private Integer asiento;
-    private String estado;
+    private EstadoEntrada estado;
     private Long ventaId;
     private String peliculaTitulo;
     private LocalDateTime funcionFechaHora;

@@ -165,7 +165,7 @@ server.port=8081
 |-------|------|-------------|
 | id | Long | PK, GeneratedValue |
 | fechaHora | LocalDateTime | Fecha y hora de la sesión |
-| precio | BigDecimal | Precio de la entrada |
+| precio | Double | Precio de la entrada |
 | **Relaciones** | N:1 | sala (FK) |
 | **Relaciones** | N:1 | pelicula (FK) |
 | **Relaciones** | 1:N | entradas (mappedBy) |
@@ -175,7 +175,7 @@ server.port=8081
 |-------|------|-------------|
 | id | Long | PK, GeneratedValue |
 | fecha | LocalDateTime | Momento de la compra |
-| importeTotal | BigDecimal | Total pagado |
+| importeTotal | Double | Total pagado |
 | metodoPago | String | TARJETA, EFECTIVO |
 | estado | String | PENDIENTE, COMPLETADA, CANCELADA |
 | **Relaciones** | N:1 | usuario (FK) |

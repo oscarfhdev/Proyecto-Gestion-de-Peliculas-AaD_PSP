@@ -185,12 +185,12 @@ public class CineDataLoader implements CommandLineRunner {
         log.info("Ventas creadas");
 
         // 9. Crear Entradas
-        Entrada entrada1 = new Entrada(generarCodigoEntrada(), 5, 10, "ACTIVA", venta1, funcion1);
-        Entrada entrada2 = new Entrada(generarCodigoEntrada(), 5, 11, "ACTIVA", venta1, funcion1);
-        Entrada entrada3 = new Entrada(generarCodigoEntrada(), 3, 7, "ACTIVA", venta2, funcion3);
-        Entrada entrada4 = new Entrada(generarCodigoEntrada(), 3, 8, "ACTIVA", venta2, funcion3);
-        Entrada entrada5 = new Entrada(generarCodigoEntrada(), 3, 9, "ACTIVA", venta2, funcion3);
-        Entrada entrada6 = new Entrada(generarCodigoEntrada(), 1, 5, "PENDIENTE", venta3, funcion4);
+        Entrada entrada1 = new Entrada(generarCodigoEntrada(), 5, 10, EstadoEntrada.PAGADA, venta1, funcion1);
+        Entrada entrada2 = new Entrada(generarCodigoEntrada(), 5, 11, EstadoEntrada.PAGADA, venta1, funcion1);
+        Entrada entrada3 = new Entrada(generarCodigoEntrada(), 3, 7, EstadoEntrada.PAGADA, venta2, funcion3);
+        Entrada entrada4 = new Entrada(generarCodigoEntrada(), 3, 8, EstadoEntrada.PAGADA, venta2, funcion3);
+        Entrada entrada5 = new Entrada(generarCodigoEntrada(), 3, 9, EstadoEntrada.PAGADA, venta2, funcion3);
+        Entrada entrada6 = new Entrada(generarCodigoEntrada(), 1, 5, EstadoEntrada.RESERVADA, venta3, funcion4);
 
         entradaRepository.save(entrada1);
         entradaRepository.save(entrada2);
