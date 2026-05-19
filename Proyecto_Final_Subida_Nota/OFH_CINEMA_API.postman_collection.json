@@ -1,0 +1,402 @@
+{
+  "info": {
+    "name": "OFH CINEMA - API JWT",
+    "description": "Colección completa de la API del Cine con autenticación JWT.\n\n**Configuración automática de token:**\n- Al hacer Login o Register, el token se guarda automáticamente en la variable `accessToken`.\n- Todas las peticiones protegidas usan la cabecera `Authorization: Bearer {{accessToken}}`.\n\n**Variables de entorno:**\n- `baseUrl`: http://localhost:8081\n- `accessToken`: Se rellena automáticamente tras Login/Register\n- `refreshToken`: Se rellena automáticamente tras Login/Register",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "URLs Publicas",
+      "description": "Endpoints accesibles sin autenticación",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "    console.log('Token guardado automaticamente');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@cine.com\",\n    \"password\": \"admin\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Register (devuelve token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "    console.log('Token de registro guardado');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"nuevo@cine.com\",\n    \"password\": \"pass1234\",\n    \"nombre\": \"Nuevo Usuario\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "    console.log('Token renovado');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/refresh", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "refresh"] }
+          }
+        },
+        {
+          "name": "Test - Endpoint Público",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/test/publico", "host": ["{{baseUrl}}"], "path": ["api", "test", "publico"] }
+          }
+        },
+        {
+          "name": "GET Películas (público)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/peliculas", "host": ["{{baseUrl}}"], "path": ["api", "v1", "peliculas"] }
+          }
+        },
+        {
+          "name": "GET Funciones (público)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/funciones", "host": ["{{baseUrl}}"], "path": ["api", "v1", "funciones"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Peliculas",
+      "description": "GET público, POST/PUT/DELETE requiere ADMIN",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/peliculas", "host": ["{{baseUrl}}"], "path": ["api", "v1", "peliculas"] } }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/peliculas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "peliculas", "1"] } }
+        },
+        {
+          "name": "Buscar por título",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/peliculas/buscar?titulo=matrix", "host": ["{{baseUrl}}"], "path": ["api", "v1", "peliculas", "buscar"], "query": [{ "key": "titulo", "value": "matrix" }] } }
+        },
+        {
+          "name": "Crear película (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"titulo\": \"Nueva Pelicula\",\n    \"sinopsis\": \"Una gran pelicula\",\n    \"genero\": \"Accion\",\n    \"duracion\": 120,\n    \"edadMinima\": 12,\n    \"imagenUrl\": \"https://image.tmdb.org/t/p/w500/poster.jpg\",\n    \"directorId\": 1,\n    \"actorIds\": [1, 2]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/peliculas", "host": ["{{baseUrl}}"], "path": ["api", "v1", "peliculas"] }
+          }
+        },
+        {
+          "name": "Actualizar película (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"titulo\": \"Pelicula Actualizada\",\n    \"sinopsis\": \"Sinopsis actualizada\",\n    \"genero\": \"Drama\",\n    \"duracion\": 150,\n    \"edadMinima\": 16,\n    \"directorId\": 1,\n    \"actorIds\": [1, 3]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/peliculas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "peliculas", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar película (ADMIN)",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/v1/peliculas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "peliculas", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Funciones / Sesiones",
+      "description": "GET público, POST/PUT/DELETE requiere ADMIN",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/funciones", "host": ["{{baseUrl}}"], "path": ["api", "v1", "funciones"] } }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/funciones/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "funciones", "1"] } }
+        },
+        {
+          "name": "Por película",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/funciones/pelicula/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "funciones", "pelicula", "1"] } }
+        },
+        {
+          "name": "Crear función (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"peliculaId\": 1,\n    \"salaId\": 1,\n    \"fechaHora\": \"2025-06-15T20:00:00\",\n    \"precio\": 9.50\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/funciones", "host": ["{{baseUrl}}"], "path": ["api", "v1", "funciones"] }
+          }
+        },
+        {
+          "name": "Actualizar función (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"peliculaId\": 1,\n    \"salaId\": 2,\n    \"fechaHora\": \"2025-06-16T18:00:00\",\n    \"precio\": 11.00\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/funciones/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "funciones", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar función (ADMIN)",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/v1/funciones/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "funciones", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Salas",
+      "description": "Todo requiere ADMIN",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/salas", "host": ["{{baseUrl}}"], "path": ["api", "v1", "salas"] } }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/salas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "salas", "1"] } }
+        },
+        {
+          "name": "Crear sala (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n    \"nombre\": \"Sala IMAX 3\",\n    \"capacidad\": 200,\n    \"tipo\": \"IMAX\",\n    \"filas\": 10,\n    \"asientosPorFila\": 20\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/salas", "host": ["{{baseUrl}}"], "path": ["api", "v1", "salas"] }
+          }
+        },
+        {
+          "name": "Actualizar sala (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n    \"nombre\": \"Sala VIP Renovada\",\n    \"capacidad\": 100,\n    \"tipo\": \"VIP\",\n    \"filas\": 8,\n    \"asientosPorFila\": 12\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/salas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "salas", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar sala (ADMIN)",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/v1/salas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "salas", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Ventas",
+      "description": "USER: comprar, mis-ventas, cancelar. ADMIN: ver todas, eliminar.",
+      "item": [
+        {
+          "name": "Listar todas (ADMIN)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/ventas", "host": ["{{baseUrl}}"], "path": ["api", "v1", "ventas"] } }
+        },
+        {
+          "name": "Obtener por ID (ADMIN)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/ventas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "ventas", "1"] } }
+        },
+        {
+          "name": "Mis Ventas (USER)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/ventas/mis-ventas", "host": ["{{baseUrl}}"], "path": ["api", "v1", "ventas", "mis-ventas"] } }
+        },
+        {
+          "name": "Comprar Entrada (USER)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"metodoPago\": \"TARJETA\",\n    \"entradas\": [\n        {\n            \"funcionId\": 1,\n            \"fila\": 5,\n            \"asiento\": 10\n        }\n    ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/ventas/comprar", "host": ["{{baseUrl}}"], "path": ["api", "v1", "ventas", "comprar"] }
+          }
+        },
+        {
+          "name": "Cancelar Venta (USER - solo propia)",
+          "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/v1/ventas/1/cancelar", "host": ["{{baseUrl}}"], "path": ["api", "v1", "ventas", "1", "cancelar"] } }
+        },
+        {
+          "name": "Eliminar Venta (ADMIN)",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/v1/ventas/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "ventas", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "description": "USER: /me. ADMIN: CRUD completo.",
+      "item": [
+        {
+          "name": "Mi Perfil (cualquier autenticado)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/usuarios/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "usuarios", "me"] } }
+        },
+        {
+          "name": "Listar todos (ADMIN)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/usuarios", "host": ["{{baseUrl}}"], "path": ["api", "v1", "usuarios"] } }
+        },
+        {
+          "name": "Obtener por ID (ADMIN)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/usuarios/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "usuarios", "1"] } }
+        },
+        {
+          "name": "Crear usuario (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n    \"email\": \"nuevo@test.com\",\n    \"password\": \"pass1234\",\n    \"nombre\": \"Test User\",\n    \"roles\": [\"USER\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/usuarios", "host": ["{{baseUrl}}"], "path": ["api", "v1", "usuarios"] }
+          }
+        },
+        {
+          "name": "Eliminar usuario (ADMIN)",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/v1/usuarios/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "usuarios", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Actores",
+      "description": "Todo requiere autenticación (ADMIN para escritura)",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/actores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "actores"] } }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/actores/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "actores", "1"] } }
+        },
+        {
+          "name": "Crear actor (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n    \"nombre\": \"Leonardo DiCaprio\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/actores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "actores"] }
+          }
+        },
+        {
+          "name": "Eliminar actor (ADMIN)",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/v1/actores/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "actores", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Directores",
+      "description": "Todo requiere autenticación (ADMIN para escritura)",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/directores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "directores"] } }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/v1/directores/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "directores", "1"] } }
+        },
+        {
+          "name": "Crear director (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n    \"nombre\": \"Christopher Nolan\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/directores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "directores"] }
+          }
+        },
+        {
+          "name": "Eliminar director (ADMIN)",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/v1/directores/1", "host": ["{{baseUrl}}"], "path": ["api", "v1", "directores", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Test Seguridad",
+      "description": "Endpoints de prueba para verificar la configuración de seguridad",
+      "item": [
+        {
+          "name": "Público (sin token)",
+          "request": { "auth": { "type": "noauth" }, "method": "GET", "url": { "raw": "{{baseUrl}}/api/test/publico", "host": ["{{baseUrl}}"], "path": ["api", "test", "publico"] } }
+        },
+        {
+          "name": "Privado (requiere token)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/test/privado", "host": ["{{baseUrl}}"], "path": ["api", "test", "privado"] } }
+        },
+        {
+          "name": "Solo ADMIN",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/test/admin", "host": ["{{baseUrl}}"], "path": ["api", "test", "admin"] } }
+        },
+        {
+          "name": "Solo USER",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/test/user", "host": ["{{baseUrl}}"], "path": ["api", "test", "user"] } }
+        }
+      ]
+    }
+  ]
+}
