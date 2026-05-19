@@ -90,9 +90,12 @@ public class FuncionService {
         int capacidad = funcion.getSala().getCapacidad();
         long vendidas = funcion.getEntradas().stream()
                 .filter(e -> e.getEstado() == EstadoEntrada.VENDIDA).count();
-        // Crear nuevo record con asientosDisponibles calculado
+        // Crear nuevo record con asientosDisponibles calculado y datos reales de la sala
         return new FuncionOutputDTO(dto.id(), dto.fechaHora(), dto.precio(),
                 dto.peliculaId(), dto.peliculaTitulo(), dto.salaId(), dto.salaNombre(),
-                (int) (capacidad - vendidas));
+                (int) (capacidad - vendidas),
+                capacidad,
+                funcion.getSala().getFilas(),
+                funcion.getSala().getAsientosPorFila());
     }
 }

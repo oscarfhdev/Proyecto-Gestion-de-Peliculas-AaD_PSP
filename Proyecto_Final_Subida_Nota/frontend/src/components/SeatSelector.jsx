@@ -24,10 +24,9 @@ const SeatSelector = ({ visible, onCancel, funcion, onConfirm, occupiedSeats = [
         if (visible) setSelectedSeats([]);
     }, [visible, funcion?.id]);
 
-    // Calculate seat layout from sala capacity
-    const seatsPerRow = 14;
-    const totalCapacity = funcion?.salaCapacidad || funcion?.asientosDisponibles || 120;
-    const totalRows = Math.ceil(totalCapacity / seatsPerRow);
+    // Use real sala layout from database (filas and asientosPorFila)
+    const seatsPerRow = funcion?.salaAsientosPorFila || 14;
+    const totalRows = funcion?.salaFilas || Math.ceil((funcion?.salaCapacidad || 120) / seatsPerRow);
 
     // Row labels (A, B, C, ...)
     const rowLabels = useMemo(() => {
@@ -147,10 +146,8 @@ const SeatSelector = ({ visible, onCancel, funcion, onConfirm, occupiedSeats = [
                     {/* SEATS GRID */}
                     <div className="flex flex-col items-center gap-[4px] sm:gap-[6px] mb-6 seat-grid-container" style={{ maxWidth: 600, margin: '0 auto', minWidth: 'fit-content' }}>
                         {rowLabels.map((label, rowIdx) => {
-                            // Calculate seats in this row (last row may have fewer)
-                            const seatsInRow = rowIdx === totalRows - 1 
-                                ? (totalCapacity % seatsPerRow || seatsPerRow) 
-                                : seatsPerRow;
+                            // All rows have the same number of seats from the database
+                            const seatsInRow = seatsPerRow;
                             
                             // Add slight curve to rows
                             const curveOffset = Math.abs(rowIdx - totalRows / 2);

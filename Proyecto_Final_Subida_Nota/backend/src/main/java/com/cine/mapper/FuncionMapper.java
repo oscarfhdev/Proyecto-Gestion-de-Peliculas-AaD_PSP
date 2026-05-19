@@ -12,6 +12,9 @@ public interface FuncionMapper {
     @Mapping(target = "salaId", source = "sala.id")
     @Mapping(target = "salaNombre", source = "sala.nombre")
     @Mapping(target = "asientosDisponibles", ignore = true)
+    @Mapping(target = "salaCapacidad", ignore = true)
+    @Mapping(target = "salaFilas", ignore = true)
+    @Mapping(target = "salaAsientosPorFila", ignore = true)
     FuncionOutputDTO toDTO(Funcion funcion);
 
     @Mapping(target = "pelicula", ignore = true)

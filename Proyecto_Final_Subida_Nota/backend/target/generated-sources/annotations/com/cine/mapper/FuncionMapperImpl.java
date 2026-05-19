@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-19T23:03:40+0200",
+    date = "2026-05-21T03:12:49+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -40,8 +40,11 @@ public class FuncionMapperImpl implements FuncionMapper {
         precio = funcion.getPrecio();
 
         int asientosDisponibles = 0;
+        int salaCapacidad = 0;
+        int salaFilas = 0;
+        int salaAsientosPorFila = 0;
 
-        FuncionOutputDTO funcionOutputDTO = new FuncionOutputDTO( id, fechaHora, precio, peliculaId, peliculaTitulo, salaId, salaNombre, asientosDisponibles );
+        FuncionOutputDTO funcionOutputDTO = new FuncionOutputDTO( id, fechaHora, precio, peliculaId, peliculaTitulo, salaId, salaNombre, asientosDisponibles, salaCapacidad, salaFilas, salaAsientosPorFila );
 
         return funcionOutputDTO;
     }
